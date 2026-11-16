@@ -1,0 +1,29 @@
+<aside class="sidebar">
+    <div class="logo">
+        <img src="{{ url_for('static', filename='img/Logo.png.jpg') }}" alt="Kinetica Logo">
+        <h2>Kinetica</h2>
+    </div>
+    <nav>
+        <ul>
+            <li><i class="icon">📰</i><a href="{{ url_for('noticias.inicio_noticias') }}">Noticias</a></li>
+            <li class="icon"><i class="icon">⚡</i><a href="{{ url_for('vehiculos.listar') }}">Vehículos</a></li>
+            <li><i class="icon">🌱</i><a href="{{ url_for('catalogo.listado') }}">Catálogo Eco</a></li>
+            <li><i class="icon">🧾</i><a href="{{ url_for('catalogo.historial') }}">{{ 'Ventas' if session.get('rol') == 'admin' else 'Mis compras' }}</a></li>
+            <li><i class="icon">🧮</i><a href="{{ url_for('calculadora.index') }}">Calculadora</a></li>
+            <li><i class="icon">🗺️</i><a href="{{ url_for('mapa.index') }}">Mapa</a></li>
+            <li><i class="icon">👤</i><a href="{{ url_for('cuenta.ver_cuenta') }}">Cuenta</a></li>
+            {% if session.get('rol') == 'admin' %}
+            <li class="nav-admin-titulo">Administración</li>
+            <li><i class="icon">🚗</i><a href="{{ url_for('catalogo.admin_inventario') }}">Inventario</a></li>
+            <li><i class="icon">👥</i><a href="{{ url_for('catalogo.admin_usuarios') }}">Usuarios</a></li>
+            <li><i class="icon">📊</i><a href="{{ url_for('catalogo.dashboard') }}">Dashboard ambiental</a></li>
+            {% endif %}
+        </ul>
+    </nav>
+    <style>
+        .sidebar { overflow-y: auto; }
+        .sidebar ul li.nav-admin-titulo { cursor: default; font-size: .72rem; letter-spacing: .08em; text-transform: uppercase;
+            opacity: .65; padding: 18px 25px 6px; border-left: 4px solid transparent; }
+        .sidebar ul li.nav-admin-titulo:hover { background: none; border-left-color: transparent; }
+    </style>
+</aside>

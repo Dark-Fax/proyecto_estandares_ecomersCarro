@@ -1,0 +1,4 @@
+{% extends "catalogo/base.html" %}{% block c %}<h3>Vehículo</h3><form method="post" class="row g-2"><input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+{% for n,l,t in [('marca','Marca','text'),('modelo','Modelo','text'),('anio','Año','number'),('precio','Precio','number'),('motor','Motor (electrico/hibrido/combustion)','text'),('categoria','Categoría','text'),('emisiones_co2','Emisiones CO2 g/km','number'),('imagen_url','URL imagen','text')] %}
+<div class="col-md-6"><label>{{ l }}</label><input class="form-control" type="{{ t }}" step="any" name="{{ n }}" value="{{ v[n] if v[n] is not none else '' }}"></div>{% endfor %}
+<div class="col-12"><button class="btn btn-success">Guardar</button></div></form>{% endblock %}

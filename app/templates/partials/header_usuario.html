@@ -1,0 +1,38 @@
+<header class="header">
+    <div class="header-left">
+        <h2>{{ titulo_pagina }}</h2>
+    </div>
+    <div class="header-right">
+        <nav class="header-nav" aria-label="Accesos rápidos">
+            <a href="{{ url_for('catalogo.listado') }}">🌱 Catálogo</a>
+            {% if session.get('rol') == 'admin' %}
+            <a href="{{ url_for('catalogo.admin_inventario') }}">Inventario</a>
+            <a href="{{ url_for('catalogo.admin_usuarios') }}">Usuarios</a>
+            <a href="{{ url_for('catalogo.dashboard') }}">Dashboard</a>
+            {% endif %}
+        </nav>
+        <div class="user-greeting">
+            <div class="avatar-circle">👋</div>
+            <div class="user-text">
+                <p class="welcome">Hola,</p>
+                <p class="username" id="nombreUsuario">{{ usuario_nombre }}</p>
+            </div>
+        </div>
+        <a href="{{ url_for('usuarios.logout') }}" class="logout-btn">Cerrar sesión</a>
+    </div>
+</header>
+{% with mensajes = get_flashed_messages(with_categories=true) %}{% for cat, texto in mensajes %}
+<div class="flash-msg flash-{{ cat }}" role="alert">{{ texto }}</div>
+{% endfor %}{% endwith %}
+<style>
+    .header { flex-wrap: wrap; gap: 12px; }
+    .header-right { flex-wrap: wrap; justify-content: flex-end; }
+    .header-nav { display: flex; flex-wrap: wrap; gap: 6px; }
+    .header-nav a { text-decoration: none; color: #020022; font-weight: 500; font-size: .85rem; padding: 7px 12px;
+        border-radius: 20px; background: #eef2f7; transition: background .2s; }
+    .header-nav a:hover { background: #d9f7db; }
+    .flash-msg { padding: 12px 18px; border-radius: 10px; margin: -10px 0 18px; font-size: .92rem; background: #e8f0fe; color: #1a3d7c; }
+    .flash-success { background: #e3f9e5; color: #1b6b25; } .flash-danger { background: #fde8e8; color: #9b1c1c; }
+    .flash-warning { background: #fff4d6; color: #7a5b00; }
+    @media (max-width: 700px) { .header-nav { display: none; } }
+</style>

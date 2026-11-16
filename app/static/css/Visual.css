@@ -1,0 +1,293 @@
+/* === RESETEO GENERAL === */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  display: flex;
+  font-family: 'Poppins', sans-serif;
+  background-color: #f5f7fa;
+  color: #222;
+  height: 100vh;
+  overflow: hidden;
+}
+
+/* === SIDEBAR === */
+.sidebar {
+  width: 250px;
+  background: linear-gradient(180deg, #020022, rgb(60, 94, 148));
+  color: white;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding-top: 30px;
+  box-shadow: 4px 0 15px rgba(0, 0, 0, 0.2);
+}
+
+.sidebar .logo img {
+  width: 80px;
+  border-radius: 50%;
+  margin-bottom: 10px;
+  border: 2px solid #45d84c;
+}
+
+.sidebar .logo h2 {
+  font-size: 1.3rem;
+  color: #45d84c;
+  margin-bottom: 30px;
+}
+
+.sidebar ul {
+  list-style: none;
+  width: 100%;
+}
+
+.sidebar ul li {
+  padding: 15px 25px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  cursor: pointer;
+  border-left: 4px solid transparent;
+  transition: 0.3s;
+}
+
+.sidebar ul li a {
+  color: white;
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.sidebar ul li:hover,
+.sidebar ul li.active {
+  background-color: rgba(255, 255, 255, 0.08);
+  border-left: 4px solid #45d84c;
+}
+
+.icon {
+  font-size: 18px;
+}
+
+/* === CONTENIDO === */
+.content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  padding: 30px;
+  overflow-y: auto;
+}
+
+/* === HEADER === */
+.header {
+  background-color: #fff;
+  padding: 20px 25px;
+  border-radius: 14px;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+  margin-bottom: 25px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.header h2 {
+  font-weight: 600;
+  color: #020022;
+}
+
+.header-right {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+}
+
+/* === USUARIO === */
+.user-greeting {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: linear-gradient(135deg, #45d84c, #a2d63b);
+  padding: 8px 16px;
+  border-radius: 14px;
+  color: white;
+  box-shadow: 0 3px 8px rgba(0,0,0,0.1);
+}
+
+.avatar-circle {
+  background-color: rgba(255,255,255,0.2);
+  border-radius: 50%;
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.2rem;
+}
+
+.user-text {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.1;
+}
+
+.user-text .welcome {
+  font-size: 0.8rem;
+  font-weight: 400;
+  color: rgba(255,255,255,0.9);
+}
+
+.user-text .username {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #fff;
+}
+
+/* === BOTÓN CERRAR SESIÓN === */
+.logout-btn {
+  /* 1. ESTO QUITA EL SUBRAYADO */
+  text-decoration: none; 
+  
+  /* 2. ESTO ASEGURA QUE EL BOTÓN RESPETE EL TAMAÑO Y LA ANIMACIÓN */
+  display: inline-flex; /* O inline-block */
+  align-items: center;
+  justify-content: center;
+
+  /* TU ESTILO VERDE */
+  background: #45d84c;
+  color: #fff;
+  border: none;
+  padding: 10px 18px;
+  border-radius: 25px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+  font-family: 'Poppins', sans-serif; /* Asegura que use la misma fuente */
+}
+
+.logout-btn:hover {
+  background: #3ac043; /* Un verde un poco más oscuro al pasar el mouse */
+  transform: scale(1.05);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+  color: #fff; /* Asegura que el texto siga blanco */
+}
+
+/* === SECCIÓN DETALLES === */
+.detalle-section {
+  background-color: #fff;
+  border-radius: 14px;
+  padding: 25px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+.detalle-container {
+  display: flex;
+  align-items: center;
+  gap: 40px;
+  flex-wrap: wrap;
+}
+
+.detalle-img {
+  width: 480px;
+  height: 300px;
+  border-radius: 14px;
+  object-fit: cover;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+}
+
+.detalle-info {
+  flex: 1;
+}
+
+.detalle-info h1 {
+  color: #020022;
+  margin-bottom: 10px;
+}
+
+.detalle-info p {
+  color: #333;
+  margin-bottom: 6px;
+}
+
+.detalle-precio {
+  color: #45d84c;
+  font-size: 1.1rem;
+  margin-top: 10px;
+}
+
+.detalle-botones {
+  margin-top: 15px;
+  display: flex;
+  gap: 10px;
+}
+
+.btn-primario,
+.btn-actualizar,
+.btn-eliminar,
+.btn-volver {
+  padding: 10px 18px;
+  border-radius: 20px;
+  font-weight: 600;
+  cursor: pointer;
+  border: none;
+  transition: 0.3s;
+}
+
+.btn-primario {
+  background-color: #45d84c;
+  color: white;
+}
+.btn-primario:hover {
+  background-color: #3ac043;
+}
+
+.btn-actualizar {
+  background-color: #1e90ff;
+  color: white;
+}
+.btn-actualizar:hover {
+  background-color: #187bcd;
+}
+
+.btn-eliminar {
+  background-color: #ff4040;
+  color: white;
+}
+.btn-eliminar:hover {
+  background-color: #e63838;
+}
+
+.btn-volver {
+  background-color: #020022;
+  color: white;
+  margin-top: 20px;
+}
+.btn-volver:hover {
+  background-color: rgb(60, 94, 148);
+}
+
+/* === FICHA TÉCNICA === */
+.ficha-tecnica {
+  margin-top: 40px;
+}
+
+.ficha-tecnica h3 {
+  color: #020022;
+  margin-bottom: 10px;
+}
+
+.ficha-tecnica table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.ficha-tecnica td {
+  border-bottom: 1px solid #ccc;
+  padding: 8px 6px;
+}
+
+.ficha-tecnica td:first-child {
+  font-weight: 600;
+  color: #020022;
+}

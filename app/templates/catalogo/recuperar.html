@@ -1,0 +1,1 @@
+{% extends "catalogo/base.html" %}{% block c %}<h3>Recuperar contraseña</h3><form method="post"><input type="hidden" name="csrf_token" value="{{ csrf_token() }}"><input class="form-control mb-2" type="email" name="email" placeholder="Correo" required><button class="btn btn-success">Enviar enlace</button></form>{% endblock %}

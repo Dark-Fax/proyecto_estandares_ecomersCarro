@@ -1,0 +1,6 @@
+{% extends "catalogo/base.html" %}{% block c %}<h3>Inventario</h3><a class="btn btn-success mb-2" href="{{ url_for('catalogo.admin_vehiculo') }}">Añadir vehículo</a>
+<table class="table"><tr><th>#</th><th>Vehículo</th><th>Motor</th><th>CO₂</th><th>Estado</th><th></th></tr>
+{% for v in vs %}<tr><td>{{ v.id }}</td><td>{{ v.marca }} {{ v.modelo }}</td><td>{{ v.motor }}</td><td>{{ v.emisiones_co2 }}</td><td>{{ v.estado }}</td><td class="d-flex gap-1">
+<a class="btn btn-sm btn-outline-primary" href="{{ url_for('catalogo.admin_vehiculo', vid=v.id) }}">Editar</a>
+{% if v.estado=='pendiente' %}<form method="post" action="{{ url_for('catalogo.registrar_venta', vid=v.id) }}"><input type="hidden" name="csrf_token" value="{{ csrf_token() }}"><button class="btn btn-sm btn-success">Registrar venta</button></form>{% endif %}
+<form method="post" action="{{ url_for('catalogo.eliminar_vehiculo', vid=v.id) }}"><input type="hidden" name="csrf_token" value="{{ csrf_token() }}"><button class="btn btn-sm btn-outline-danger">Eliminar</button></form></td></tr>{% endfor %}</table>{% endblock %}

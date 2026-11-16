@@ -1,0 +1,4 @@
+{% extends "catalogo/base.html" %}{% block c %}<h3>Usuarios</h3><table class="table"><tr><th>#</th><th>Nombre</th><th>Correo</th><th>Rol</th><th></th></tr>
+{% for u in us %}<tr><td>{{ u.id }}</td><td>{{ u.nombre }}</td><td>{{ u.email }}</td><td>{{ u.rol }}</td><td class="d-flex gap-1">
+<form method="post" action="{{ url_for('catalogo.cambiar_rol', uid=u.id) }}"><input type="hidden" name="csrf_token" value="{{ csrf_token() }}"><input type="hidden" name="rol" value="{{ 'usuario' if u.rol=='admin' else 'admin' }}"><button class="btn btn-sm btn-outline-primary">Hacer {{ 'usuario' if u.rol=='admin' else 'admin' }}</button></form>
+<form method="post" action="{{ url_for('catalogo.eliminar_usuario', uid=u.id) }}"><input type="hidden" name="csrf_token" value="{{ csrf_token() }}"><button class="btn btn-sm btn-outline-danger">Eliminar</button></form></td></tr>{% endfor %}</table>{% endblock %}

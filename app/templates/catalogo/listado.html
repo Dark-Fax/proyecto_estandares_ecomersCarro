@@ -1,0 +1,18 @@
+{% extends "catalogo/base.html" %}{% block c %}
+<form class="row g-2 mb-3">
+<div class="col-6 col-md-2"><select name="marca" class="form-select"><option value="">Marca</option>{% for m in marcas %}<option {{ 'selected' if f.get('marca')==m }}>{{ m }}</option>{% endfor %}</select></div>
+<div class="col-6 col-md-2"><input name="modelo" class="form-control" placeholder="Modelo" value="{{ f.get('modelo','') }}"></div>
+<div class="col-6 col-md-2"><input name="precio_max" type="number" class="form-control" placeholder="Precio máx." value="{{ f.get('precio_max','') }}"></div>
+<div class="col-6 col-md-1"><input name="anio" type="number" class="form-control" placeholder="Año" value="{{ f.get('anio','') }}"></div>
+<div class="col-6 col-md-2"><input name="categoria" class="form-control" placeholder="Categoría" value="{{ f.get('categoria','') }}"></div>
+<div class="col-6 col-md-2"><select name="motor" class="form-select"><option value="">Motor</option>{% for m in ['electrico','hibrido','combustion'] %}<option {{ 'selected' if f.get('motor')==m }}>{{ m }}</option>{% endfor %}</select></div>
+<div class="col-12 col-md-1"><button class="btn btn-success w-100">Filtrar</button></div></form>
+{% if not p.items %}<div class="alert alert-warning">No hay vehículos disponibles con estas características</div>{% endif %}
+<div class="row">{% for v in p.items %}<div class="col-12 col-md-4 mb-3"><div class="card h-100">
+{% if v.imagen_url %}<img src="{{ v.imagen_url }}" class="card-img-top" alt="{{ v.modelo }}">{% endif %}
+<div class="card-body"><h5>{{ v.marca }} {{ v.modelo }} {% if v.es_ecologico() %}<span class="badge bg-success">Planeta Verde</span>{% endif %}</h5>
+<p class="mb-1">{{ v.motor|capitalize }} · {{ v.anio }} · ${{ '{:,.0f}'.format(v.precio) }} COP</p><span class="badge bg-secondary">{{ v.estado }}</span>
+<a class="stretched-link" href="{{ url_for('catalogo.detalle', vid=v.id) }}"></a></div></div></div>{% endfor %}</div>
+{% if p.has_prev %}<a href="{{ url_for('catalogo.listado', pagina=p.prev_num, **qs) }}">&laquo; Anterior</a>{% endif %}
+{% if p.has_next %}<a class="ms-3" href="{{ url_for('catalogo.listado', pagina=p.next_num, **qs) }}">Siguiente &raquo;</a>{% endif %}
+{% endblock %}

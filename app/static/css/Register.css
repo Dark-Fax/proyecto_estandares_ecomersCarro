@@ -1,0 +1,217 @@
+/* =========================================
+   1. FONDO "ELECTRIC NIGHT"
+   ========================================= */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html, body {
+    height: 100%;
+    font-family: 'Poppins', sans-serif;
+    /* Fondo oscuro profundo */
+    background: linear-gradient(-45deg, #0a0a0a, #020022, #0f3460, #001f12);
+    background-size: 400% 400%;
+    animation: gradientBG 12s ease infinite;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden; /* Sin barras de desplazamiento */
+}
+
+@keyframes gradientBG {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+
+/* =========================================
+   2. TARJETA PRINCIPAL (Más Pequeña y Compacta)
+   ========================================= */
+.container {
+    background-color: #ffffffb2;
+    width: 90%;          /* Se adapta a móviles */
+    max-width: 360px;    /* ANCHO REDUCIDO (Antes 420px) */
+    padding: 30px 25px;  /* RELLENO REDUCIDO (Antes 50px) */
+    
+    border-radius: 16px; /* Bordes un poco menos redondos para ahorrar espacio */
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+    
+    animation: floatUp 0.6s ease-out forwards;
+    position: relative;
+    z-index: 10;
+}
+
+@keyframes floatUp {
+    from { opacity: 0; transform: translateY(30px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* =========================================
+   3. TÍTULOS (Compactos)
+   ========================================= */
+h1, h2, h3 {
+    color: #111827;
+    text-align: center;
+    margin-bottom: 5px; /* Menos espacio abajo */
+    font-weight: 800;
+    font-size: 1.6rem;  /* Letra un poco más pequeña */
+    letter-spacing: -0.5px;
+}
+
+/* Línea decorativa más pegada */
+h1::after, h2::after, h3::after {
+    content: '';
+    display: block;
+    width: 40px;
+    height: 4px;
+    background: #45d84c;
+    margin: 8px auto 20px; /* Márgenes reducidos */
+    border-radius: 2px;
+}
+
+/* =========================================
+   4. INPUTS (Más Delgados)
+   ========================================= */
+label {
+    color: #374151;
+    font-size: 0.85rem; /* Texto un poco más chico */
+    font-weight: 700;
+    display: block;
+    margin-bottom: 4px; /* Más pegado al input */
+    margin-left: 2px;
+}
+
+input {
+    width: 100%;
+    padding: 10px 12px;   /* MENOS RELLENO (Inputs más flacos) */
+    margin-bottom: 15px;  /* MENOS ESPACIO entre inputs */
+    
+    border: 2px solid #e5e7eb; 
+    border-radius: 8px;
+    background-color: #f9fafb;
+    
+    color: #111;
+    font-size: 0.9rem; /* Letra ajustada */
+    font-family: inherit;
+    transition: all 0.2s ease;
+}
+
+input::placeholder {
+    color: #9ca3af;
+}
+
+input:focus {
+    outline: none;
+    background-color: #fff;
+    border-color: #45d84c;
+    box-shadow: 0 0 0 3px rgba(69, 216, 76, 0.1);
+}
+
+/* =========================================
+   5. BOTÓN PRINCIPAL (Compacto)
+   ========================================= */
+button {
+    width: 100%;
+    padding: 12px; /* Botón más delgado */
+    margin-top: 5px;
+    border: none;
+    border-radius: 8px;
+    
+    font-size: 1rem;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    color: #ffffff;
+    
+    background: #45d84c;
+    cursor: pointer;
+    transition: all 0.2s;
+    box-shadow: 0 4px 6px -1px rgba(69, 216, 76, 0.3);
+}
+
+button:hover {
+    background: #38b03f;
+    transform: translateY(-2px);
+    box-shadow: 0 10px 15px -3px rgba(69, 216, 76, 0.4);
+}
+
+/* =========================================
+   6. BOTÓN SECUNDARIO (Visible y Compacto)
+   ========================================= */
+a {
+    display: block;
+    text-align: center;
+    margin-top: 15px; /* Menos separación */
+    padding: 10px;    /* Más delgado */
+    text-decoration: none;
+    font-size: 0.9rem;
+    font-weight: 700;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+
+    /* ESTILO VISIBLE (Gris Oscuro) */
+    color: #1f2937;
+    background-color: transparent;
+    border: 2px solid #d1d5db; 
+}
+
+a:hover {
+    border-color: #111827;
+    background-color: #111827;
+    color: #ffffff;
+    transform: translateY(-2px);
+}
+
+/* =========================================
+   7. ALERTAS (Compactas)
+   ========================================= */
+.flashes {
+    position: fixed;
+    top: 15px; /* Más arriba */
+    left: 50%;
+    transform: translateX(-50%);
+    width: 90%;
+    max-width: 360px;
+    z-index: 1000;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.alert {
+    padding: 10px 15px; /* Alerta más pequeña */
+    border-radius: 8px;
+    font-weight: 600;
+    text-align: center;
+    font-size: 0.85rem;
+    box-shadow: 0 5px 10px rgba(0,0,0,0.1);
+    animation: slideDown 0.5s forwards;
+}
+
+.alert-success {
+    background-color: #ecfdf5;
+    color: #065f46;
+    border-left: 5px solid #10b981;
+}
+
+.alert-danger {
+    background-color: #fef2f2;
+    color: #991b1b;
+    border-left: 5px solid #ef4444;
+}
+
+@keyframes slideDown {
+    from { transform: translateY(-50px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+}
+
+/* RESPONSIVE */
+@media (max-height: 600px) {
+    /* Si la pantalla es muy bajita, ajustamos aún más */
+    .container { padding: 20px 15px; }
+    h1 { font-size: 1.4rem; }
+    input { padding: 8px 10px; margin-bottom: 10px; }
+}

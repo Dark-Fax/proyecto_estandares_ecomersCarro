@@ -1,0 +1,5 @@
+{% extends "catalogo/base.html" %}{% block c %}<h2>{{ v.marca }} {{ v.modelo }} {% if v.es_ecologico() %}<span class="badge bg-success">Planeta Verde</span>{% endif %}</h2>
+{% if v.imagen_url %}<img src="{{ v.imagen_url }}" class="img-fluid mb-3" style="max-height:300px" alt="">{% endif %}
+<ul><li>Año: {{ v.anio }}</li><li>Motor: {{ v.motor }}</li><li>Categoría: {{ v.categoria }}</li><li>Emisiones CO₂: {{ v.emisiones_co2 }} g/km</li><li>Precio: ${{ '{:,.0f}'.format(v.precio) }} COP</li><li>Estado: {{ v.estado }}</li></ul>
+{% if v.estado=='disponible' %}<form method="post" action="{{ url_for('catalogo.solicitar', vid=v.id) }}"><input type="hidden" name="csrf_token" value="{{ csrf_token() }}"><button class="btn btn-success">Solicitar compra</button></form>{% endif %}
+<a href="{{ url_for('catalogo.listado') }}">Volver</a>{% endblock %}

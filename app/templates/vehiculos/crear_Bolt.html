@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Chevrolet Bolt EV 2023 ⚡</title>
+  <link rel="icon" href="{{ url_for('static', filename='img/Logo.png.jpg') }}" type="image/x-icon" />
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/Visual.css') }}" />
+</head>
+
+<body>
+
+  {% include 'partials/sidebar.html' %}
+
+  <main class="content">
+    
+    {% include 'partials/header_usuario.html' %}
+
+
+    <section class="detalle-section">
+      <div class="detalle-container">
+        <img class="detalle-img" src="https://lp-auto-assets.s3.amazonaws.com/23/chevrolet/bolt-ev/M3/header.jpg"
+          alt="Chevrolet Bolt EV 2023">
+        <div class="detalle-info">
+          <h1>Chevrolet Bolt EV 2023</h1>
+          <p>El Chevrolet Bolt EV 2023 ofrece una autonomía impresionante con un diseño compacto ideal para ciudad.
+            Totalmente eléctrico, combina eficiencia, conectividad y carga rápida.</p>
+
+          <div class="detalle-datos">
+            <p><strong>Tipo:</strong> Hatchback eléctrico</p>
+            <p><strong>Año:</strong> 2023</p>
+            <p><strong>Autonomía:</strong> 416 km (EPA)</p>
+            <p><strong>Motor:</strong> 200 HP / 266 lb-pie de torque</p>
+            <p><strong>Transmisión:</strong> Automática de una sola velocidad</p>
+            <p><strong>Color disponible:</strong> Blanco Summit</p>
+          </div>
+
+          <p class="detalle-precio">Precio aproximado: <strong>$210.000.000 COP</strong></p>
+
+          <div class="detalle-botones">
+            <button class="btn-primario"
+              onclick="window.open('https://www.chevrolet.com/electric/bolt-ev', '_blank')">Ficha técnica
+              oficial</button>
+            <button class="btn-actualizar">Actualizar</button>
+            <button class="btn-eliminar">Eliminar</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="ficha-tecnica">
+        <h3>Ficha técnica detallada</h3>
+        <table>
+          <tr>
+            <td>Batería</td>
+            <td>65 kWh</td>
+          </tr>
+          <tr>
+            <td>Tiempo de carga rápida</td>
+            <td>30 min (160 km)</td>
+          </tr>
+          <tr>
+            <td>Velocidad máxima</td>
+            <td>150 km/h</td>
+          </tr>
+          <tr>
+            <td>Aceleración 0–100 km/h</td>
+            <td>6.5 s</td>
+          </tr>
+          <tr>
+            <td>Tracción</td>
+            <td>Delantera (FWD)</td>
+          </tr>
+          <tr>
+            <td>Garantía</td>
+            <td>8 años o 160.000 km</td>
+          </tr>
+          <tr>
+            <td>Conectividad</td>
+            <td>Apple CarPlay / Android Auto inalámbrico</td>
+          </tr>
+          <tr>
+            <td>Puertos de carga</td>
+            <td>CCS Combo Tipo 1</td>
+          </tr>
+        </table>
+      </div>
+
+      <div class="volver">
+        <button id="btnVolver" class="btn-volver" data-url="{{ url_for('vehiculos.listar') }}">← Volver al
+          catálogo</button>
+      </div>
+    </section>
+  </main>
+  <script src="{{ url_for('static', filename='js/Global.js') }}"></script>
+</body>
+
+</html>

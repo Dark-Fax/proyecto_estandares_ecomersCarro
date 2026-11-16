@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kinetica - Gestión de Noticias</title>
+    <link rel="icon" href="{{ url_for('static', filename='img/Logo.png.jpg') }}" type="image/x-icon">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/Dashboard.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/Crear_Noticias.css') }}" />
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/Editar_Noticias.css') }}" />
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/listar_noticias.css') }}">
+</head>
+
+<body>
+
+    {% include 'partials/sidebar.html' %}
+    <main class="content">
+        {% include 'partials/header_usuario.html' %}
+
+        <section class="main-section">
+
+            <a href="{{ url_for('noticias.crear_formulario') }}" class="btn-create" style="display: inline-block; text-align: center;">
+                ➕ Crear Nueva Noticia
+            </a>
+
+            <div class="news-list" id="newsList">
+
+
+                <!-- Noticias dinámicas desde la base de datos -->
+                {% for noticia in noticias %}
+                <div class="news-card">
+                    <div class="news-info">
+                        <h3><a href="{{ url_for('noticias.ver', id=noticia.id) }}">{{ noticia.titulo }}</a></h3>
+                        <p>Categoría: {{ noticia.categoria }} • Autor: {{ noticia.autor }} • {{ noticia.vistas }} vistas</p>
+                        <p>{{ noticia.contenido[:120] }}...</p>
+                    </div>
+                    <div class="news-actions">
+                        {% if session['rol'] == 'admin' %}
+                        <a href="{{ url_for('noticias.editar', id=noticia.id) }}" class="btn-edit">✏️ Editar</a>
+                        <form action="{{ url_for('noticias.eliminar', id=noticia.id) }}" method="post" style="display:inline;"><input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                            <button type="submit" class="btn-delete">🗑️ Eliminar</button>
+                        </form>
+                        {% endif %}
+                    </div>
+                </div>
+                {% endfor %}
+
+            </div>
+
+        </section>
+    </main>
+
+    <script>
+        // Animaciones de entrada
+        window.addEventListener('DOMContentLoaded', () => {
+            const cards = document.querySelectorAll('.news-card');
+            cards.forEach((card, index) => {
+                card.style.opacity = '0';
+                card.style.transform = 'translateY(20px)';
+                setTimeout(() => {
+                    card.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+                    card.style.opacity = '1';
+                    card.style.transform = 'translateY(0)';
+                }, index * 100);
+            });
+        });
+    </script>
+
+</body>
+</html>

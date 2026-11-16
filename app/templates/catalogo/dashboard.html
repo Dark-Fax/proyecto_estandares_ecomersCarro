@@ -1,0 +1,2 @@
+{% extends "catalogo/base.html" %}{% block c %}<h3>Dashboard ambiental</h3><p>Ventas totales: {{ total }} · <strong>{{ pct }}%</strong> Planeta Verde (eléctricos + híbridos)</p>
+{% for k,n in por_motor.items() %}<div class="mb-2">{{ k|capitalize }}: {{ n }}<div class="progress"><div class="progress-bar {{ 'bg-success' if k!='combustion' else 'bg-secondary' }}" style="width:{{ (100*n/total) if total else 0 }}%"></div></div></div>{% endfor %}{% endblock %}

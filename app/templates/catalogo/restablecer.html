@@ -1,0 +1,1 @@
+{% extends "catalogo/base.html" %}{% block c %}<h3>Nueva contraseña</h3><form method="post"><input type="hidden" name="csrf_token" value="{{ csrf_token() }}"><input class="form-control mb-2" type="password" name="password" placeholder="Mín. 8, mayúscula y número" required><button class="btn btn-success">Guardar</button></form>{% endblock %}

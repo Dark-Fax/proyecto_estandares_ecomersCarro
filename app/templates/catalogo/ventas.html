@@ -1,0 +1,2 @@
+{% extends "catalogo/base.html" %}{% block c %}<h3>Historial de ventas</h3><table class="table"><tr><th>#</th><th>Cliente</th><th>Vehículo</th><th>Precio</th><th>Fecha</th><th></th></tr>
+{% for x in ventas %}<tr><td>{{ x.id }}</td><td>{{ x.usuario.nombre }}</td><td>{{ x.vehiculo.marca }} {{ x.vehiculo.modelo }}</td><td>${{ '{:,.0f}'.format(x.precio_venta) }}</td><td>{{ x.fecha_venta.strftime('%Y-%m-%d') }}</td><td><a href="{{ url_for('catalogo.comprobante', id=x.id) }}">PDF</a></td></tr>{% endfor %}</table>{% endblock %}
