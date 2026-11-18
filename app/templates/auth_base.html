@@ -1,0 +1,18 @@
+{% from "catalogo/_ui.html" import leaf %}<!doctype html>
+<html lang="es"><head><script>document.documentElement.classList.add("js")</script><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>{% block title %}{% endblock %} – Planeta Verde</title>
+<link rel="icon" href="{{ url_for('static', filename='img/Logo.png.jpg') }}">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/planeta.css') }}"></head>
+<body><div class="auth">
+  <aside class="auth-aside">
+    <a class="brand" href="{{ url_for('catalogo.listado') }}">{{ leaf(30) }}<span><b>Planeta Verde</b><small>Concesionario Eco</small></span></a>
+    <blockquote><p>Cada kilómetro puede ser un poco más limpio.</p><footer>Vehículos eléctricos e híbridos con emisiones transparentes.</footer></blockquote>
+    <span class="eyebrow">Movilidad sostenible</span>
+  </aside>
+  <main class="auth-main"><div class="auth-box">
+    {% with m = get_flashed_messages(with_categories=true) %}{% for c, t in m %}<div class="alert alert-{{ c if c in ['success','danger','info','warning'] else 'info' }}" role="alert"><span>{{ t }}</span><button type="button" class="alert-x" aria-label="Cerrar aviso">&times;</button></div>{% endfor %}{% endwith %}
+    {% block c %}{% endblock %}
+  </div></main>
+</div><script src="{{ url_for('static', filename='js/planeta.js') }}" defer></script></body></html>

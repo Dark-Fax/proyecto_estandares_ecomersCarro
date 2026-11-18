@@ -1,71 +1,49 @@
-<!DOCTYPE html>
-<html lang="es">
+{% extends "catalogo/base.html" %}{% from "catalogo/_ui.html" import icon %}
+{% block title %}Gestión de noticias{% endblock %}
+{% block c %}
+{% set admin = session.get('rol') == 'admin' %}
+<div class="page-head"><div><span class="eyebrow">Noticias</span><h1>Gestión de noticias</h1><p class="lede">Actualidad, guías y análisis sobre movilidad eléctrica y sostenible.</p></div>
+{% if admin %}<a href="{{ url_for('noticias.crear_formulario') }}" class="btn">{{ icon('plus', 16) }} Crear nueva noticia</a>{% endif %}</div>
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Kinetica - Gestión de Noticias</title>
-    <link rel="icon" href="{{ url_for('static', filename='img/Logo.png.jpg') }}" type="image/x-icon">
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/Dashboard.css') }}">
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/Crear_Noticias.css') }}" />
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/Editar_Noticias.css') }}" />
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/listar_noticias.css') }}">
-</head>
-
-<body>
-
-    {% include 'partials/sidebar.html' %}
-    <main class="content">
-        {% include 'partials/header_usuario.html' %}
-
-        <section class="main-section">
-
-            <a href="{{ url_for('noticias.crear_formulario') }}" class="btn-create" style="display: inline-block; text-align: center;">
-                ➕ Crear Nueva Noticia
-            </a>
-
-            <div class="news-list" id="newsList">
-
-
-                <!-- Noticias dinámicas desde la base de datos -->
-                {% for noticia in noticias %}
-                <div class="news-card">
-                    <div class="news-info">
-                        <h3><a href="{{ url_for('noticias.ver', id=noticia.id) }}">{{ noticia.titulo }}</a></h3>
-                        <p>Categoría: {{ noticia.categoria }} • Autor: {{ noticia.autor }} • {{ noticia.vistas }} vistas</p>
-                        <p>{{ noticia.contenido[:120] }}...</p>
-                    </div>
-                    <div class="news-actions">
-                        {% if session['rol'] == 'admin' %}
-                        <a href="{{ url_for('noticias.editar', id=noticia.id) }}" class="btn-edit">✏️ Editar</a>
-                        <form action="{{ url_for('noticias.eliminar', id=noticia.id) }}" method="post" style="display:inline;"><input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
-                            <button type="submit" class="btn-delete">🗑️ Eliminar</button>
-                        </form>
-                        {% endif %}
-                    </div>
-                </div>
-                {% endfor %}
-
-            </div>
-
-        </section>
-    </main>
-
-    <script>
-        // Animaciones de entrada
-        window.addEventListener('DOMContentLoaded', () => {
-            const cards = document.querySelectorAll('.news-card');
-            cards.forEach((card, index) => {
-                card.style.opacity = '0';
-                card.style.transform = 'translateY(20px)';
-                setTimeout(() => {
-                    card.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
-                    card.style.opacity = '1';
-                    card.style.transform = 'translateY(0)';
-                }, index * 100);
-            });
-        });
-    </script>
-
-</body>
-</html>
+{% if not noticias %}
+<div class="empty"><h3>Aún no hay noticias publicadas</h3><p>Cuando se publique la primera aparecerá aquí.</p>{% if admin %}<a class="btn" href="{{ url_for('noticias.crear_formulario') }}">Crear la primera noticia</a>{% endif %}</div>
+{% else %}
+{% set cats = noticias|map(attribute='categoria')|select|unique|sort|list %}
+<div class="toolbar" id="newsTools">
+  <label class="search" for="q"><span class="label" style="position:absolute;left:-9999px">Buscar noticias</span>{{ icon('search', 17) }}<input id="q" type="search" placeholder="Buscar por título, autor o contenido" autocomplete="off"></label>
+  <div class="pills" role="group" aria-label="Filtrar por categoría"><button type="button" class="pill on" data-cat="">Todas</button>{% for c in cats %}<button type="button" class="pill" data-cat="{{ c }}">{{ c|replace('-', ' ')|capitalize }}</button>{% endfor %}</div>
+</div>
+<div class="news-grid" id="newsList">
+  {% for noticia in noticias %}
+  <article class="news-card" data-cat="{{ noticia.categoria or '' }}" data-q="{{ (noticia.titulo ~ ' ' ~ (noticia.autor or '') ~ ' ' ~ noticia.contenido)|lower }}">
+    <div class="media">{% if noticia.imagen %}<img src="{{ url_for('static', filename='img/noticias/' + noticia.imagen) }}" alt="" loading="lazy" data-fallback>{% endif %}<span class="mono {{ 'alt' if noticia.imagen }}" aria-hidden="true">{{ noticia.titulo[:1]|upper }}</span></div>
+    <div class="news-body">
+      {% if noticia.categoria %}<span class="cat" style="align-self:flex-start">{{ noticia.categoria|replace('-', ' ')|capitalize }}</span>{% endif %}
+      <h3><a href="{{ url_for('noticias.ver', id=noticia.id) }}">{{ noticia.titulo }}</a></h3>
+      <p class="excerpt">{{ noticia.contenido[:120] }}...</p>
+      <div class="news-meta"><span>{{ noticia.autor }}</span><span>{{ noticia.vistas }} vistas</span></div>
+      {% if admin %}<div class="news-actions">
+        <a href="{{ url_for('noticias.editar', id=noticia.id) }}" class="btn btn-ghost btn-sm">{{ icon('edit', 14) }} Editar</a>
+        <form action="{{ url_for('noticias.eliminar', id=noticia.id) }}" method="post" onsubmit="return confirm('¿Eliminar esta noticia?')"><input type="hidden" name="csrf_token" value="{{ csrf_token() }}"><button type="submit" class="btn btn-danger btn-sm">{{ icon('trash', 14) }} Eliminar</button></form>
+      </div>{% endif %}
+    </div>
+  </article>
+  {% endfor %}
+</div>
+<div class="empty no-results" id="noResults" data-no-reveal><h3>Ninguna noticia coincide</h3><p>Prueba con otra palabra o elige otra categoría.</p></div>
+{% endif %}
+{% endblock %}
+{% block scripts %}<script>
+(() => {
+  const list = document.getElementById('newsList'); if (!list) return;
+  const cards = [...list.children], q = document.getElementById('q'), pills = [...document.querySelectorAll('.pill')], none = document.getElementById('noResults');
+  let cat = '';
+  const apply = () => {
+    const t = q.value.trim().toLowerCase(); let n = 0;
+    cards.forEach(c => { const ok = (!cat || c.dataset.cat === cat) && (!t || c.dataset.q.includes(t)); c.hidden = !ok; n += ok; });
+    none.classList.toggle('show', n === 0);
+  };
+  q.addEventListener('input', apply);
+  pills.forEach(p => p.addEventListener('click', () => { cat = p.dataset.cat; pills.forEach(x => x.classList.toggle('on', x === p)); apply(); }));
+})();
+</script>{% endblock %}

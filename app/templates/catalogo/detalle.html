@@ -1,5 +1,24 @@
-{% extends "catalogo/base.html" %}{% block c %}<h2>{{ v.marca }} {{ v.modelo }} {% if v.es_ecologico() %}<span class="badge bg-success">Planeta Verde</span>{% endif %}</h2>
-{% if v.imagen_url %}<img src="{{ v.imagen_url }}" class="img-fluid mb-3" style="max-height:300px" alt="">{% endif %}
-<ul><li>Año: {{ v.anio }}</li><li>Motor: {{ v.motor }}</li><li>Categoría: {{ v.categoria }}</li><li>Emisiones CO₂: {{ v.emisiones_co2 }} g/km</li><li>Precio: ${{ '{:,.0f}'.format(v.precio) }} COP</li><li>Estado: {{ v.estado }}</li></ul>
-{% if v.estado=='disponible' %}<form method="post" action="{{ url_for('catalogo.solicitar', vid=v.id) }}"><input type="hidden" name="csrf_token" value="{{ csrf_token() }}"><button class="btn btn-success">Solicitar compra</button></form>{% endif %}
-<a href="{{ url_for('catalogo.listado') }}">Volver</a>{% endblock %}
+{% extends "catalogo/base.html" %}{% from "catalogo/_ui.html" import chip, motor, media, leaf %}
+{% block title %}{{ v.marca }} {{ v.modelo }}{% endblock %}
+{% block c %}
+{% set co2 = v.emisiones_co2|float %}
+<nav class="crumbs" aria-label="Ruta"><a href="{{ url_for('catalogo.listado') }}">Catálogo</a><span>/</span><span>{{ v.marca }} {{ v.modelo }}</span></nav>
+<div class="detail">
+  {{ media(v) }}
+  <div>
+    <span class="eyebrow">{{ v.categoria }} · {{ v.anio }}</span>
+    <h1>{{ v.marca }} {{ v.modelo }}</h1>
+    <div style="display:flex;align-items:center;gap:16px;flex-wrap:wrap"><span class="price">${{ '{:,.0f}'.format(v.precio) }}<small>COP</small></span>{{ chip(v.estado) }}</div>
+    <dl class="specs">
+      <div><dt>Año</dt><dd>{{ v.anio }}</dd></div><div><dt>Motor</dt><dd>{{ motor(v.motor) }}</dd></div><div><dt>Categoría</dt><dd>{{ v.categoria }}</dd></div>
+      <div><dt>Emisiones CO₂</dt><dd>{{ '%g'|format(co2) }} g/km</dd></div><div><dt>Estado</dt><dd>{{ v.estado|capitalize }}</dd></div>
+    </dl>
+    <div class="impact {{ '' if v.es_ecologico() else 'neutral' }}">{% if v.es_ecologico() %}{{ leaf(22) }}{% endif %}<div><b>{{ 'Vehículo de cero emisiones' if co2 == 0 else 'Emisiones: ' ~ ('%g'|format(co2)) ~ ' g/km de CO₂' }}</b>{{ 'Distintivo Planeta Verde: movilidad con menor impacto ambiental.' if v.es_ecologico() else 'Motor de combustión interna.' }}</div></div>
+    {% if v.estado=='disponible' %}
+    <form method="post" action="{{ url_for('catalogo.solicitar', vid=v.id) }}"><input type="hidden" name="csrf_token" value="{{ csrf_token() }}"><button class="btn btn-block">Solicitar compra</button></form>
+    {% if not session.get('usuario_id') %}<p class="hint" style="text-align:center">Te pediremos iniciar sesión para registrar tu solicitud.</p>{% endif %}
+    {% else %}<p class="muted">Este vehículo ya no está disponible para nuevas solicitudes.</p>{% endif %}
+    <p style="margin-top:20px"><a href="{{ url_for('catalogo.listado') }}">&larr; Volver al catálogo</a></p>
+  </div>
+</div>
+{% endblock %}

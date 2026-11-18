@@ -6,3 +6,7 @@ migrations/
 *.sqlite3
 test_db.py
 *.db
+
+!.env.example
+
+.venv/

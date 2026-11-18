@@ -1,113 +1,62 @@
-<!DOCTYPE html>
-<html lang="es">
+{% extends "catalogo/base.html" %}
+{% block title %}Mapa de estaciones{% endblock %}
+{% block head %}<link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css"><script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>{% endblock %}
+{% block c %}
+<div class="page-head"><div><span class="eyebrow">Recarga</span><h1>Mapa de estaciones de carga</h1><p class="lede">Puntos de carga cercanos en Bogotá, con potencia, conectores y operador.</p></div></div>
+<div class="map-card" data-no-reveal>
+  <div class="map-bar">
+    <div class="legend"><span><img src="{{ url_for('static', filename='img/charger-default.png') }}" alt="">Carga estándar</span><span><img src="{{ url_for('static', filename='img/charger-fast.png') }}" alt="">Carga rápida (&gt; 40 kW)</span></div>
+    <span class="chip chip-disponible" id="mapCount">Cargando estaciones</span>
+  </div>
+  <!-- Data container para pasar datos de Flask a JS -->
+  <div id="map" data-estaciones='{{ estaciones | tojson | safe }}'></div>
+  <div class="map-msg" id="mapMsg" hidden></div>
+</div>
+{% endblock %}
+{% block scripts %}<script>
+const mapDiv = document.getElementById('map');
+const estaciones = JSON.parse(mapDiv.dataset.estaciones);
+const msg = document.getElementById('mapMsg'), count = document.getElementById('mapCount');
+count.textContent = estaciones.length + (estaciones.length === 1 ? ' estación' : ' estaciones');
+if (!estaciones.length) { msg.textContent = 'No hay estaciones disponibles en este momento. Inténtalo de nuevo más tarde.'; msg.hidden = false; }
+if (typeof L === 'undefined') { msg.textContent = 'No se pudo cargar el mapa. Revisa tu conexión e inténtalo de nuevo.'; msg.hidden = false; }
+else {
+  // Crear mapa centrado en Bogotá
+  const map = L.map('map').setView([4.7110, -74.0721], 12);
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 19, attribution: '&copy; OpenStreetMap' }).addTo(map);
 
-<head>
-    <meta charset="UTF-8">
-    <title>Kinetica — Mapa de Estaciones</title>
+  // Iconos personalizados según el tipo de conexión
+  const iconDefault = L.icon({ iconUrl: '{{ url_for("static", filename="img/charger-default.png") }}', iconSize: [30, 30], iconAnchor: [15, 30], popupAnchor: [0, -28] });
+  const iconFast = L.icon({ iconUrl: '{{ url_for("static", filename="img/charger-fast.png") }}', iconSize: [30, 30], iconAnchor: [15, 30], popupAnchor: [0, -28] });
 
-    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css">
-    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
-    <link rel="icon" href="{{ url_for('static', filename='img/Logo.png.jpg') }}" type="image/x-icon">
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/Dashboard.css') }}">
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/mapa.css') }}">
-</head>
+  // Considerar fast si el tipo incluye "fast" o "rápida" o potencia alta (>40kW)
+  function elegirIcono(conexion) {
+    if (!conexion) return iconDefault;
+    const tipo = conexion.ConnectionType?.Title || "";
+    const potencia = conexion.PowerKW || 0;
+    if (tipo.toLowerCase().includes("fast") || tipo.toLowerCase().includes("rapida") || potencia > 40) return iconFast;
+    return iconDefault;
+  }
 
-<body>
-
-    <!-- Sidebar -->
-    
-    {% include 'partials/sidebar.html' %}
-
-    <main class="content map-container">
-
-        {% include 'partials/header_usuario.html' %}
-
-
-        <div class="map-card">
-            <div class="map-header">
-                📍 Mapa de Estaciones de Carga en Bogotá
-            </div>
-
-            <!-- Data container para pasar datos de Flask a JS -->
-            <div id="map" data-estaciones='{{ estaciones | tojson | safe }}'></div>
-        </div>
-    </main>
-
-    <script>
-        // Crear mapa centrado en Bogotá
-        const map = L.map('map').setView([4.7110, -74.0721], 12);
-
-        // Cargar tiles de OpenStreetMap
-        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-            maxZoom: 19
-        }).addTo(map);
-
-        // Obtener estaciones desde el data-attribute
-        const mapDiv = document.getElementById('map');
-        const estaciones = JSON.parse(mapDiv.dataset.estaciones);
-
-        console.log("Estaciones cargadas:", estaciones);
-
-        // Iconos personalizados según el tipo de conexión
-        const iconDefault = L.icon({
-            iconUrl: '{{ url_for("static", filename="img/charger-default.png") }}',
-            iconSize: [30, 30],
-            iconAnchor: [15, 30],
-            popupAnchor: [0, -28]
-        });
-
-        const iconFast = L.icon({
-            iconUrl: '{{ url_for("static", filename="img/charger-fast.png") }}',
-            iconSize: [30, 30],
-            iconAnchor: [15, 30],
-            popupAnchor: [0, -28]
-        });
-
-        // Función para elegir icono según tipo de conexión o potencia
-        function elegirIcono(conexion) {
-            if (!conexion) return iconDefault;
-            const tipo = conexion.ConnectionType?.Title || "";
-            const potencia = conexion.PowerKW || 0;
-
-            // Considerar fast si el tipo incluye "fast" o "rápida" o potencia alta (>40kW)
-            if (tipo.toLowerCase().includes("fast") || tipo.toLowerCase().includes("rapida") || potencia > 40) {
-                return iconFast;
-            }
-            return iconDefault;
-        }
-
-        // Agregar marcadores al mapa
-        estaciones.forEach(e => {
-            if (!e.AddressInfo) return;
-
-            const lat = e.AddressInfo.Latitude;
-            const lon = e.AddressInfo.Longitude;
-
-            const conexion = e.Connections[0]; // Primer tipo de conexión
-            const icono = elegirIcono(conexion);
-
-            const marker = L.marker([lat, lon], { icon: icono }).addTo(map);
-
-            // Popup con información de la estación
-            const urlDetalles = e.AddressInfo.RelatedURL || `https://openchargemap.org/site/poi/${e.ID}`;
-
-            marker.bindPopup(`
-                <div style="min-width:250px">
-                    <strong>${e.AddressInfo.Title}</strong><br>
-                    📍 ${e.AddressInfo.AddressLine1 || "Sin dirección"}<br>
-                    ⚡ ${conexion?.PowerKW || "N/A"} kW<br>
-                    Tipo: ${conexion?.ConnectionType?.Title || "Desconocido"}<br>
-                    <hr style="margin:4px 0;">
-                    <strong>Operador / Red:</strong> ${e.DataProvider?.Title || "Desconocido"}<br>
-                    <strong>Estado:</strong> ${conexion?.StatusType?.Title || "Desconocido"}<br>
-                    <strong>Uso:</strong> ${conexion?.UsageType?.Title || "Desconocido"}<br>
-                    <strong>Cantidad de conectores:</strong> ${e.NumberOfPoints || "N/A"}<br>
-                    <strong>Conectores:</strong> ${e.Connections.map(c => c.ConnectionType?.Title).join(", ")}<br>
-                    <strong>Lat/Long:</strong> ${lat.toFixed(5)}, ${lon.toFixed(5)}
-                </div>
-            `);
-        });
-    </script>
-</body>
-    <script src="{{ url_for('static', filename='js/Global.js') }}"></script>
-</html>
+  estaciones.forEach(e => {
+    if (!e.AddressInfo) return;
+    const lat = e.AddressInfo.Latitude, lon = e.AddressInfo.Longitude;
+    const conexion = e.Connections[0]; // Primer tipo de conexión
+    const marker = L.marker([lat, lon], { icon: elegirIcono(conexion) }).addTo(map);
+    marker.bindPopup(`
+      <div style="min-width:250px">
+        <strong>${e.AddressInfo.Title}</strong><br>
+        📍 ${e.AddressInfo.AddressLine1 || "Sin dirección"}<br>
+        ⚡ ${conexion?.PowerKW || "N/A"} kW<br>
+        Tipo: ${conexion?.ConnectionType?.Title || "Desconocido"}<br>
+        <hr style="margin:4px 0;">
+        <strong>Operador / Red:</strong> ${e.DataProvider?.Title || "Desconocido"}<br>
+        <strong>Estado:</strong> ${conexion?.StatusType?.Title || "Desconocido"}<br>
+        <strong>Uso:</strong> ${conexion?.UsageType?.Title || "Desconocido"}<br>
+        <strong>Cantidad de conectores:</strong> ${e.NumberOfPoints || "N/A"}<br>
+        <strong>Conectores:</strong> ${e.Connections.map(c => c.ConnectionType?.Title).join(", ")}<br>
+        <strong>Lat/Long:</strong> ${lat.toFixed(5)}, ${lon.toFixed(5)}
+      </div>`);
+  });
+}
+</script>{% endblock %}

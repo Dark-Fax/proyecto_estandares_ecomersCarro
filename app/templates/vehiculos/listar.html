@@ -1,101 +1,44 @@
-<!DOCTYPE html>
-<html lang="es">
+{% extends "catalogo/base.html" %}
+{% block title %}Vehículos eléctricos{% endblock %}
+{% block c %}
+<div class="page-head"><div><span class="eyebrow">Movilidad eléctrica</span><h1>Vehículos eléctricos</h1><p class="lede">Una selección de modelos 100% eléctricos con su autonomía y precio aproximado.</p></div></div>
 
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Kinetica - Vehículos eléctricos</title>
-  <link rel="icon" href="{{ url_for('static', filename='img/Logo.png.jpg') }}" type="image/x-icon" />
-  <link rel="stylesheet" href="{{ url_for('static', filename='css/Vehiculo.css') }}" />
-</head>
+<section class="feature">
+  <div class="feature-info">
+    <span class="eyebrow">Vehículo destacado</span>
+    <h2>Kia EV6 GT-Line 2024</h2>
+    <div class="range"><div><b>506 km</b><small>Autonomía (WLTP)</small></div><div><b>$250.000.000</b><small>Precio aprox. COP</small></div></div>
+    <div><a class="btn btn-brass" href="{{ url_for('vehiculos.kia') }}">Ver detalles</a></div>
+  </div>
+  <div class="media"><img src="https://d2u1z1lopyfwlx.cloudfront.net/thumbnails/aa93bc08-60da-5b34-a454-a7c759571473/a1ae5bb0-9c73-5189-9e36-292bdc04a608.jpg" alt="Kia EV6 GT-Line" referrerpolicy="no-referrer" data-fallback><span class="mono alt" aria-hidden="true">K</span></div>
+</section>
 
-<body>
-  
-  {% include 'partials/sidebar.html' %}
-
-  <!-- Contenido principal -->
-  <main class="content">
-    
-    {% include 'partials/header_usuario.html' %}
-
-    <!-- Sección principal -->
-    <section class="main-section">
-
-      <!-- Vehículo destacado -->
-      <div class="featured-vehicle">
-        <div class="featured-info">
-          <h1>Vehículo destacado</h1>
-          <p><strong>Kia EV6 GT-Line 2024</strong></p>
-          <p>Autonomía: 506 km (WLTP)</p>
-          <p class="price">Precio aprox: $250.000.000 COP</p>
-          <a class="btn-primario" href="{{ url_for('vehiculos.kia') }}">Ver detalles</a>
-        </div>
-        <img src="https://d2u1z1lopyfwlx.cloudfront.net/thumbnails/aa93bc08-60da-5b34-a454-a7c759571473/a1ae5bb0-9c73-5189-9e36-292bdc04a608.jpg"
-          alt="Kia EV6 GT-Line">
-      </div>
-
-      <!-- Lista de vehículos -->
-      <div class="vehicle-list">
-
-        <div class="vehicle-card">
-          <img src="https://lp-auto-assets.s3.amazonaws.com/23/chevrolet/bolt-ev/M3/header.jpg" alt="Chevrolet Bolt EV">
-          <div class="vehicle-info">
-            <h3>Chevrolet Bolt EV 2023</h3>
-            <p>Hatchback • 2023 • 0 km</p>
-            <p>Autonomía: 416 km • $210.000.000</p>
-            <a class="btn-secundario" href="{{ url_for('vehiculos.bolt') }}">Ver detalles</a>
-          </div>
-        </div>
-
-        <div class="vehicle-card">
-          <img src="https://static0.carbuzzimages.com/wordpress/wp-content/uploads/gallery-images/original/402000/100/402104.jpg?q=50&fit=contain&w=750&h=422&dpr=1.5"
-            alt="Nissan Leaf">
-          <div class="vehicle-info">
-            <h3>Nissan Leaf 2023</h3>
-            <p>Compacto • 2023 • 0 km</p>
-            <p>Autonomía: 385 km • $199.990.000</p>
-            <a class="btn-secundario" href="{{ url_for('vehiculos.leaf') }}">Ver detalles</a>
-          </div>
-        </div>
-
-        <div class="vehicle-card">
-          <img src="https://d2u1z1lopyfwlx.cloudfront.net/thumbnails/d6898721-147a-553e-a37c-e9f272c21a89/317e674c-7cf8-59cd-8e53-d9e5af1fe5ed.jpg"
-            alt="BMW i4">
-          <div class="vehicle-info">
-            <h3>BMW i4 eDrive40 2024</h3>
-            <p>Sedán • 2024 • 0 km</p>
-            <p>Autonomía: 483 km • $340.000.000</p>
-            <a class="btn-secundario" href="{{ url_for('vehiculos.bmw') }}">Ver detalles</a>
-          </div>
-        </div>
-
-        <div class="vehicle-card">
-          <img src="https://img.sm360.ca/ir/w1280h1024/images/article/beaucage/121995//article-essai-volvo-xc40-recharge-2024-photos_11699642294458.jpg"
-            alt="Volvo XC40 Recharge">
-          <div class="vehicle-info">
-            <h3>Volvo XC40 Recharge 2024</h3>
-            <p>SUV • 2024 • 0 km</p>
-            <p>Autonomía: 460 km • $320.000.000</p>
-            <a class="btn-secundario" href="{{ url_for('vehiculos.volvo') }}">Ver detalles</a>
-          </div>
-        </div>
-
-        <div class="vehicle-card">
-          <img src="https://hips.hearstapps.com/hmg-prod/images/2024-tesla-model-3-long-range-rwd-120-66feb66119c63.jpg?crop=0.571xw:0.479xh;0.146xw,0.416xh&resize=2048:*"
-            alt="Tesla Model 3">
-          <div class="vehicle-info">
-            <h3>Tesla Model 3 Long Range 2024</h3>
-            <p>Sedán • 2024 • 0 km</p>
-            <p>Autonomía: 513 km • $290.000.000</p>
-            <a class="btn-secundario" href="{{ url_for('vehiculos.tesla') }}">Ver detalles</a>
-          </div>
-        </div>
-
-      </div>
-    </section>
-  </main>
-
-  <script src="{{ url_for('static', filename='js/Global.js') }}"></script>
-</body>
-
-</html>
+<div class="section-head"><h2>Más modelos</h2></div>
+<div class="fleet">
+    <article class="fleet-card"><div class="media"><img src="https://lp-auto-assets.s3.amazonaws.com/23/chevrolet/bolt-ev/M3/header.jpg" alt="Chevrolet Bolt EV" loading="lazy" referrerpolicy="no-referrer" data-fallback><span class="mono alt" aria-hidden="true">C</span></div>
+      <div class="v-body"><span class="eyebrow">Hatchback · 2023</span>
+        <h3 style="margin-top:10px"><a href="{{ url_for('vehiculos.bolt') }}">Chevrolet Bolt EV 2023</a></h3>
+        <div class="spec-row"><span>0 km</span><span>Autonomía: 416 km</span></div>
+        <div class="v-foot"><span class="price" style="font-size:1.35rem">$210.000.000</span><span class="btn btn-ghost btn-sm">Ver detalles</span></div></div></article>
+    <article class="fleet-card"><div class="media"><img src="https://static0.carbuzzimages.com/wordpress/wp-content/uploads/gallery-images/original/402000/100/402104.jpg?q=50&fit=contain&w=750&h=422&dpr=1.5" alt="Nissan Leaf" loading="lazy" referrerpolicy="no-referrer" data-fallback><span class="mono alt" aria-hidden="true">N</span></div>
+      <div class="v-body"><span class="eyebrow">Compacto · 2023</span>
+        <h3 style="margin-top:10px"><a href="{{ url_for('vehiculos.leaf') }}">Nissan Leaf 2023</a></h3>
+        <div class="spec-row"><span>0 km</span><span>Autonomía: 385 km</span></div>
+        <div class="v-foot"><span class="price" style="font-size:1.35rem">$199.990.000</span><span class="btn btn-ghost btn-sm">Ver detalles</span></div></div></article>
+    <article class="fleet-card"><div class="media"><img src="https://d2u1z1lopyfwlx.cloudfront.net/thumbnails/d6898721-147a-553e-a37c-e9f272c21a89/317e674c-7cf8-59cd-8e53-d9e5af1fe5ed.jpg" alt="BMW i4" loading="lazy" referrerpolicy="no-referrer" data-fallback><span class="mono alt" aria-hidden="true">B</span></div>
+      <div class="v-body"><span class="eyebrow">Sedán · 2024</span>
+        <h3 style="margin-top:10px"><a href="{{ url_for('vehiculos.bmw') }}">BMW i4 eDrive40 2024</a></h3>
+        <div class="spec-row"><span>0 km</span><span>Autonomía: 483 km</span></div>
+        <div class="v-foot"><span class="price" style="font-size:1.35rem">$340.000.000</span><span class="btn btn-ghost btn-sm">Ver detalles</span></div></div></article>
+    <article class="fleet-card"><div class="media"><img src="https://img.sm360.ca/ir/w1280h1024/images/article/beaucage/121995//article-essai-volvo-xc40-recharge-2024-photos_11699642294458.jpg" alt="Volvo XC40 Recharge" loading="lazy" referrerpolicy="no-referrer" data-fallback><span class="mono alt" aria-hidden="true">V</span></div>
+      <div class="v-body"><span class="eyebrow">SUV · 2024</span>
+        <h3 style="margin-top:10px"><a href="{{ url_for('vehiculos.volvo') }}">Volvo XC40 Recharge 2024</a></h3>
+        <div class="spec-row"><span>0 km</span><span>Autonomía: 460 km</span></div>
+        <div class="v-foot"><span class="price" style="font-size:1.35rem">$320.000.000</span><span class="btn btn-ghost btn-sm">Ver detalles</span></div></div></article>
+    <article class="fleet-card"><div class="media"><img src="https://hips.hearstapps.com/hmg-prod/images/2024-tesla-model-3-long-range-rwd-120-66feb66119c63.jpg?crop=0.571xw:0.479xh;0.146xw,0.416xh&resize=2048:*" alt="Tesla Model 3" loading="lazy" referrerpolicy="no-referrer" data-fallback><span class="mono alt" aria-hidden="true">T</span></div>
+      <div class="v-body"><span class="eyebrow">Sedán · 2024</span>
+        <h3 style="margin-top:10px"><a href="{{ url_for('vehiculos.tesla') }}">Tesla Model 3 Long Range 2024</a></h3>
+        <div class="spec-row"><span>0 km</span><span>Autonomía: 513 km</span></div>
+        <div class="v-foot"><span class="price" style="font-size:1.35rem">$290.000.000</span><span class="btn btn-ghost btn-sm">Ver detalles</span></div></div></article>
+</div>
+{% endblock %}

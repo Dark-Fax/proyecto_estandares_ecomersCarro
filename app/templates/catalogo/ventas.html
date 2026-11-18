@@ -1,2 +1,11 @@
-{% extends "catalogo/base.html" %}{% block c %}<h3>Historial de ventas</h3><table class="table"><tr><th>#</th><th>Cliente</th><th>Vehículo</th><th>Precio</th><th>Fecha</th><th></th></tr>
-{% for x in ventas %}<tr><td>{{ x.id }}</td><td>{{ x.usuario.nombre }}</td><td>{{ x.vehiculo.marca }} {{ x.vehiculo.modelo }}</td><td>${{ '{:,.0f}'.format(x.precio_venta) }}</td><td>{{ x.fecha_venta.strftime('%Y-%m-%d') }}</td><td><a href="{{ url_for('catalogo.comprobante', id=x.id) }}">PDF</a></td></tr>{% endfor %}</table>{% endblock %}
+{% extends "catalogo/base.html" %}
+{% block title %}{{ 'Historial de ventas' if session.get('rol') == 'admin' else 'Mis compras' }}{% endblock %}
+{% block c %}
+{% set admin = session.get('rol') == 'admin' %}
+<div class="page-head"><div><span class="eyebrow">{{ 'Administración' if admin else 'Mi cuenta' }}</span><h1>{{ 'Historial de ventas' if admin else 'Mis compras' }}</h1></div><span class="muted">{{ ventas|length }} registro{{ '' if ventas|length == 1 else 's' }}</span></div>
+{% if not ventas %}<div class="empty"><h3>{{ 'Aún no hay ventas registradas' if admin else 'Aún no tienes compras' }}</h3><p>Cuando se confirme una venta aparecerá aquí con su comprobante.</p><a class="btn btn-ghost" href="{{ url_for('catalogo.listado') }}">Explorar catálogo</a></div>
+{% else %}<div class="table-wrap"><table>
+<thead><tr><th>#</th><th>Cliente</th><th>Vehículo</th><th class="num">Precio</th><th>Fecha</th><th></th></tr></thead><tbody>
+{% for x in ventas %}<tr><td class="id">{{ x.id }}</td><td>{{ x.usuario.nombre }}</td><td class="strong">{{ x.vehiculo.marca }} {{ x.vehiculo.modelo }}</td><td class="num">${{ '{:,.0f}'.format(x.precio_venta) }}</td><td>{{ x.fecha_venta.strftime('%Y-%m-%d') }}</td><td class="num"><a href="{{ url_for('catalogo.comprobante', id=x.id) }}">Comprobante PDF</a></td></tr>{% endfor %}
+</tbody></table></div>{% endif %}
+{% endblock %}

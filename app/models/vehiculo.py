@@ -1,5 +1,6 @@
 from datetime import datetime
 from app import db
+from app.imagenes import foto_de
 
 ECOLOGICOS = ("electrico", "hibrido")
 
@@ -20,6 +21,17 @@ class Vehiculo(db.Model):
 
     def es_ecologico(self):  # RF-04: distintivo Planeta Verde
         return self.motor in ECOLOGICOS
+
+    @property
+    def foto(self):
+        """Foto a mostrar: la de la base de datos o, si está vacía, la de referencia del catálogo."""
+        return self.imagen_url or foto_de(self.marca, self.modelo)
+
+    @property
+    def carroceria(self):
+        """Tipo de silueta (sedan | suv | hatch) según la categoría, para la imagen de reserva."""
+        c = (self.categoria or "").lower()
+        return "suv" if "suv" in c else "hatch" if ("hatch" in c or "compact" in c) else "sedan"
 
 class Venta(db.Model):
     __tablename__ = "ventas"

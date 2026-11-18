@@ -1,1 +1,6 @@
-{% extends "catalogo/base.html" %}{% block c %}<h3>Recuperar contraseña</h3><form method="post"><input type="hidden" name="csrf_token" value="{{ csrf_token() }}"><input class="form-control mb-2" type="email" name="email" placeholder="Correo" required><button class="btn btn-success">Enviar enlace</button></form>{% endblock %}
+{% extends "auth_base.html" %}{% block title %}Recuperar contraseña{% endblock %}
+{% block c %}<span class="eyebrow">Acceso</span><h1>Recuperar contraseña</h1><p class="lede">Escribe tu correo y te enviaremos un enlace para crear una nueva. Vence en 15 minutos.</p>
+<form method="post"><input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+<div class="field"><label for="email">Correo electrónico</label><input id="email" type="email" name="email" placeholder="tucorreo@ejemplo.com" autocomplete="email" required></div>
+<button class="btn btn-block" style="margin-top:24px">Enviar enlace</button></form>
+<div class="auth-links"><a href="{{ url_for('usuarios.login') }}">&larr; Volver a iniciar sesión</a></div>{% endblock %}

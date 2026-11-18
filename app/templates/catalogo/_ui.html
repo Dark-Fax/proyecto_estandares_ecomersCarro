@@ -1,0 +1,95 @@
+{% macro leaf(size=14) %}<svg width="{{ size }}" height="{{ size }}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 4C10 4 4 9.5 4 16c0 1.5.4 2.9 1.2 4C6.8 14 11 11 16 9.5 11.5 12 8.5 15.5 7.5 20.3c.8.4 1.7.7 2.5.7 6 0 10-5.5 10-17Z"/></svg>{% endmacro %}
+{% macro chip(estado) %}<span class="chip chip-{{ estado }}">{{ estado|capitalize }}</span>{% endmacro %}
+{% macro motor(m) %}{{ {'electrico': 'Eléctrico', 'hibrido': 'Híbrido', 'combustion': 'Combustión'}.get(m, m|capitalize) }}{% endmacro %}
+{% macro car(kind='sedan', fijo=false) %}<svg class="car car-{{ kind }}"{% if fijo %} width="340" height="130"{% endif %} viewBox="0 0 340 130" role="img" aria-label="Silueta de vehículo" xmlns="http://www.w3.org/2000/svg">
+{% if kind == 'suv' %}<path class="car-body" d="M16 92V50C16 28 28 8 54 8H210C228 8 238 18 245 34L258 58L300 65C318 68 326 76 326 87V92H288A26 26 0 0 0 236 92H108A26 26 0 0 0 56 92Z"/>
+<path class="car-glass" d="M30 44C30 30 38 18 54 18H68V44ZM76 18H142V44H76ZM150 18H208C220 18 228 24 234 32L244 44H150Z"/>
+{% elif kind == 'hatch' %}<path class="car-body" d="M18 92V74C18 58 40 36 78 29H204C226 29 240 42 252 57L300 65C318 68 326 76 326 87V92H288A26 26 0 0 0 236 92H108A26 26 0 0 0 56 92Z"/>
+<path class="car-glass" d="M62 52C74 42 88 36 106 36H142V52ZM150 36H200C214 36 226 44 236 52H150Z"/>
+{% else %}<path class="car-body" d="M14 92V78C14 71 19 67 27 65L74 59C88 41 106 31 130 31H192C214 31 230 43 244 58L298 66C317 69 326 77 326 87V92H288A26 26 0 0 0 236 92H108A26 26 0 0 0 56 92Z"/>
+<path class="car-glass" d="M90 57C100 45 114 38 130 38H150V57ZM158 38H190C206 38 218 47 230 57H158Z"/>
+{% endif %}
+<g class="wheel"><circle class="tire" cx="82" cy="100" r="22"/><circle class="rim" cx="82" cy="100" r="11"/><path class="spokes" d="M82 90v20M72 100h20M75 93l14 14M89 93l-14 14"/></g>
+<g class="wheel"><circle class="tire" cx="262" cy="100" r="22"/><circle class="rim" cx="262" cy="100" r="11"/><path class="spokes" d="M262 90v20M252 100h20M255 93l14 14M269 93l-14 14"/></g>
+</svg>{% endmacro %}
+{% macro scene() %}<svg class="scene-svg" viewBox="0 0 640 400" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg" focusable="false">
+<defs>
+<linearGradient id="sk" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#14291f"/><stop offset=".5" stop-color="#2b6149"/><stop offset=".82" stop-color="#9cc08f"/><stop offset="1" stop-color="#e6d78f"/></linearGradient>
+<radialGradient id="gl"><stop offset="0" stop-color="#f4cf63" stop-opacity=".75"/><stop offset="1" stop-color="#f4cf63" stop-opacity="0"/></radialGradient>
+<linearGradient id="bm" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#fff3c4" stop-opacity=".6"/><stop offset="1" stop-color="#fff3c4" stop-opacity="0"/></linearGradient>
+<linearGradient id="pt" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ffffff"/><stop offset=".45" stop-color="#e3ece6"/><stop offset=".8" stop-color="#a9bfb2"/><stop offset="1" stop-color="#6f8a7b"/></linearGradient>
+<linearGradient id="gs" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#7fc4a8"/><stop offset=".55" stop-color="#1f4b3c"/><stop offset="1" stop-color="#0b1a14"/></linearGradient>
+<linearGradient id="sh" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#fff" stop-opacity="0"/><stop offset=".5" stop-color="#fff" stop-opacity=".6"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></linearGradient>
+<radialGradient id="ug"><stop offset="0" stop-color="#3fe0a0" stop-opacity=".85"/><stop offset="1" stop-color="#3fe0a0" stop-opacity="0"/></radialGradient>
+<linearGradient id="as" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#1a2a22"/><stop offset="1" stop-color="#0b1511"/></linearGradient>
+<path id="h1" d="M0 262C70 224 150 226 230 256S390 288 470 250 590 224 640 262V340H0Z"/>
+<path id="h2" d="M0 292C90 262 180 270 270 296S470 306 560 280 620 276 640 292V350H0Z"/>
+<g id="tr" fill="#1b4333">{% for x, h in ((40, 44), (112, 30), (190, 52), (268, 36), (356, 48), (430, 28), (512, 54), (590, 38)) %}<path d="M{{ x }} {{ 322 - h }}L{{ x - h * 0.32 }} 322H{{ x + h * 0.32 }}Z"/><path d="M{{ x }} {{ 322 - h * 0.62 - 14 }}L{{ x - h * 0.42 }} {{ 322 - h * 0.25 }}H{{ x + h * 0.42 }}L{{ x }} {{ 322 - h * 0.62 - 14 }}Z" opacity="0.85"/>{% endfor %}</g>
+<g id="gr" fill="#22372c">{% for i in range(26) %}<rect x="{{ (i * 53) % 640 }}" y="{{ 336 + (i * 29) % 58 }}" width="{{ 3 + (i % 3) * 3 }}" height="1.6" rx=".8"/>{% endfor %}</g>
+<g id="ps">{% for i in range(8) %}<rect x="{{ i * 80 + 10 }}" y="303" width="3.5" height="19" rx="1" fill="#c9d6cd"/><rect x="{{ i * 80 + 10 }}" y="307" width="3.5" height="3.4" fill="#e0523f"/>{% endfor %}</g>
+<path id="bd" d="M10 106C8 98 8 88 11 80C13 73 19 70 28 68L56 64C74 50 100 38 132 33C152 30 172 30 188 33C208 37 226 50 240 60L282 67C306 71 326 78 334 88C337 93 337 100 335 106L326 109L306 110L18 110Z"/>
+<clipPath id="bc"><use href="#bd"/></clipPath>
+</defs>
+<rect width="640" height="400" fill="url(#sk)"/>
+<circle class="sun-glow" cx="468" cy="214" r="128" fill="url(#gl)"/><circle class="sun" cx="468" cy="214" r="54" fill="#f2c85b"/>
+<g class="hills-far" fill="#3d7a5e" opacity=".9"><use href="#h1"/><use href="#h1" x="640"/></g>
+<g class="hills-near" fill="#24513d"><use href="#h2"/><use href="#h2" x="640"/></g>
+<g class="trees"><use href="#tr"/><use href="#tr" x="640"/></g>
+<g class="posts"><use href="#ps"/><use href="#ps" x="640"/></g>
+<rect y="322" width="640" height="78" fill="url(#as)"/><rect y="322" width="640" height="3" fill="#3f7458"/><rect y="327" width="640" height="1.6" fill="#dfe9e3" opacity=".45"/>
+<g class="grain"><use href="#gr"/><use href="#gr" x="640"/></g>
+<line class="dashes" x1="0" y1="372" x2="640" y2="372" stroke="#e3b341" stroke-width="4" stroke-dasharray="38 30" stroke-linecap="round"/>
+{% for y, l, d in ((250, 70, 0), (270, 110, 0.35), (292, 56, 0.7), (312, 90, 0.5), (238, 84, 0.9), (302, 130, 1.1)) %}<line class="speed" x1="640" x2="{{ 640 + l }}" y1="{{ y }}" y2="{{ y }}" stroke="#eafaf1" stroke-width="1.6" stroke-linecap="round" style="animation-delay:{{ d }}s"/>{% endfor %}
+<ellipse class="shadow" cx="278" cy="334" rx="176" ry="8" fill="#000" opacity=".5"/>
+<g transform="translate(112 215) scale(.96)"><g class="hero-car">
+<path class="beam" d="M328 80L590 50V124L328 90Z" fill="url(#bm)"/>
+<ellipse class="ug" cx="172" cy="116" rx="150" ry="7" fill="url(#ug)"/>
+{% for dx, dy, d in ((0, 0, 0), (-6, -3, 0.25), (4, 2, 0.5), (-3, -1, 0.7)) %}<circle class="puff" cx="{{ 58 + dx }}" cy="{{ 117 + dy }}" r="3" fill="#cdd8d1" style="animation-delay:{{ d }}s"/>{% endfor %}
+<g class="ev-body">
+<use href="#bd" fill="url(#pt)"/>
+<g clip-path="url(#bc)">
+<circle cx="86" cy="99" r="28.5" fill="#06100b"/><circle cx="260" cy="99" r="28.5" fill="#06100b"/>
+<path d="M0 90C100 84 240 84 340 96V120H0Z" fill="#000" opacity=".1"/>
+<rect x="0" y="103" width="340" height="9" fill="#17251e"/><rect x="114" y="102" width="118" height="1.6" fill="#3fe0a0"/>
+<rect class="glint" x="-60" y="20" width="60" height="100" fill="url(#sh)"/>
+</g>
+<path d="M22 80C90 73 210 73 322 86" fill="none" stroke="#fff" stroke-width="1.2" opacity=".6"/>
+<path d="M24 87C90 81 210 82 326 94" fill="none" stroke="#6f8a7b" stroke-width="1" opacity=".5"/>
+<path d="M12 71C17 66 26 64 34 63.5V66C27 67 20 69 16 73Z" fill="#c4d1ca"/>
+<path d="M10 100L46 106V110L14 109Z" fill="#101a15"/>
+<path d="M68 62C86 50 108 42 134 38C152 36 172 36 186 38C202 41 218 52 230 61Z" fill="url(#gs)"/>
+<circle cx="196" cy="49" r="6.5" fill="#06120d" opacity=".55"/><path d="M184 62C185 55 190 56 197 56C205 56 210 58 211 62Z" fill="#06120d" opacity=".55"/>
+<path d="M68 62C86 50 108 42 134 38L146 38L150 62Z" fill="#fff" opacity=".12"/>
+<path d="M147 36H152L153 62H148Z" fill="#dce7e0"/>
+<path d="M132 33C152 30 172 30 188 33" fill="none" stroke="#fff" stroke-width="1.2" opacity=".85"/>
+<path d="M148 62L146 108M236 62C240 78 240 94 238 108" fill="none" stroke="#5d7468" stroke-width=".8" opacity=".75"/>
+<rect x="160" y="68" width="20" height="3.6" rx="1.8" fill="#aebfb5"/>
+<path d="M233 58L247 57C249 57 250 60 249 62L236 64Z" fill="#dce7e0" stroke="#9fb5a8" stroke-width=".5"/>
+<path d="M312 90L333 92L331 104L314 104Z" fill="#0a130f"/><path d="M316 95H331M316 99H330" stroke="#2a3a32" stroke-width="1" fill="none"/>
+<path class="hl" d="M298 71L328 79C331 80 331 83 328 83L302 78C298 77 296 73 298 71Z" fill="#f3fffb"/><path d="M300 73L326 80" stroke="#5cf0b4" stroke-width="1.2" fill="none"/>
+<path class="tl" d="M9 82V77C12 73 17 71 26 69L27 73C19 75 14 77 11 82Z" fill="#ff3b3b"/>
+</g>
+{% for cx in (86, 260) %}<g transform="translate({{ cx }} 99)">
+<circle r="23" fill="#0b110e"/><circle r="21" fill="none" stroke="#1d2a24" stroke-width="1.5"/>
+<circle r="13" fill="#46544d"/><circle r="12" fill="none" stroke="#7d8c85" stroke-width=".8"/>
+<path d="M3 -12A12 12 0 0 1 11.6 -3.2L8 -2.4A8.4 8.4 0 0 0 2.4 -8Z" fill="#3fe0a0"/>
+<g class="rot">{% for a in (0, 72, 144, 216, 288) %}<path transform="rotate({{ a }})" d="M-2.8 -4.5L-1.8 -15.2H1.8L2.8 -4.5Z" fill="#dfe8e3"/>{% endfor %}<circle r="15.2" fill="none" stroke="#c4d1ca" stroke-width="2.4"/><circle r="3.8" fill="#17251e"/><circle r="1.6" fill="#3fe0a0"/></g>
+</g>{% endfor %}
+</g></g>
+</svg>{% endmacro %}
+{% macro media(v) %}<div class="media">{% if v.foto %}<img src="{{ v.foto }}" alt="{{ v.marca }} {{ v.modelo }}" loading="lazy" referrerpolicy="no-referrer" data-fallback><span class="alt" aria-hidden="true">{{ car(v.carroceria) }}</span>{% else %}<span class="sil" aria-hidden="true">{{ car(v.carroceria) }}</span>{% endif %}{% if v.es_ecologico() %}<span class="badge">{{ leaf(12) }} Planeta Verde</span>{% endif %}</div>{% endmacro %}
+{% macro icon(n, size=18) %}{% set d = {
+ 'bolt': '<path d="M13 2 4 14h7l-1 8 9-12h-7l1-8Z"/>',
+ 'fuel': '<path d="M4 21V5a2 2 0 0 1 2-2h6a2 2 0 0 1 2 2v16M3 21h12M14 9h2a2 2 0 0 1 2 2v5a1.5 1.5 0 0 0 3 0V8l-3-3"/><path d="M6 8h6"/>',
+ 'search': '<circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/>',
+ 'upload': '<path d="M12 16V4m0 0L7 9m5-5 5 5M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2"/>',
+ 'plus': '<path d="M12 5v14M5 12h14"/>',
+ 'edit': '<path d="M4 20h4L19 9l-4-4L4 16v4Z"/>',
+ 'trash': '<path d="M4 7h16M10 11v6M14 11v6M6 7l1 13h10l1-13M9 7V4h6v3"/>',
+ 'calc': '<rect x="5" y="3" width="14" height="18" rx="2"/><path d="M8 7h8M8 12h2m4 0h2M8 16h2m4 0h2"/>',
+ 'news': '<path d="M5 4h11a2 2 0 0 1 2 2v14H7a2 2 0 0 1-2-2V4Z"/><path d="M18 8h2v10a2 2 0 0 1-2 2M8 8h7M8 12h7M8 16h4"/>',
+ 'arrow': '<path d="M5 12h14m-6-6 6 6-6 6"/>',
+ 'back': '<path d="M19 12H5m6-6-6 6 6 6"/>',
+ 'save': '<path d="M5 4h11l3 3v13H5V4Z"/><path d="M8 4v5h7V4M8 20v-6h8v6"/>',
+ 'user': '<circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/>'
+}[n] %}<svg width="{{ size }}" height="{{ size }}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">{{ d|safe }}</svg>{% endmacro %}

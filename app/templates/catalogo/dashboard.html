@@ -1,2 +1,17 @@
-{% extends "catalogo/base.html" %}{% block c %}<h3>Dashboard ambiental</h3><p>Ventas totales: {{ total }} · <strong>{{ pct }}%</strong> Planeta Verde (eléctricos + híbridos)</p>
-{% for k,n in por_motor.items() %}<div class="mb-2">{{ k|capitalize }}: {{ n }}<div class="progress"><div class="progress-bar {{ 'bg-success' if k!='combustion' else 'bg-secondary' }}" style="width:{{ (100*n/total) if total else 0 }}%"></div></div></div>{% endfor %}{% endblock %}
+{% extends "catalogo/base.html" %}{% from "catalogo/_ui.html" import motor %}
+{% block title %}Panel ambiental{% endblock %}
+{% block c %}
+<div class="page-head"><div><span class="eyebrow">Administración</span><h1>Panel ambiental</h1><p class="lede">Impacto de las ventas registradas según el tipo de motor.</p></div></div>
+<div class="kpis">
+  <div class="panel kpi"><div class="label">Ventas totales</div><div class="value">{{ total }}</div><p class="note">Vehículos entregados a clientes</p></div>
+  <div class="panel kpi"><div class="label">Ventas Planeta Verde</div><div class="value">{{ por_motor['electrico'] + por_motor['hibrido'] }}</div><p class="note">Eléctricos + híbridos</p></div>
+</div>
+<div class="split">
+  <div class="panel"><div class="label">Participación Planeta Verde</div><div class="donut" style="--p:{{ pct }}"><span>{{ pct }}%</span></div><p class="hint" style="text-align:center;margin-top:16px">{{ pct }}% Planeta Verde (eléctricos + híbridos)</p></div>
+  <div class="panel"><div class="label" style="margin-bottom:22px">Ventas por tipo de motor</div>
+    {% set colores = {'electrico': 'var(--forest)', 'hibrido': '#6f9a82', 'combustion': '#b3ab94'} %}
+    {% for k, n in por_motor.items() %}<div class="bar"><div class="bar-top"><b>{{ motor(k) }}</b><span class="muted">{{ n }} · {{ '%.1f'|format(100*n/total if total else 0) }}%</span></div>
+      <div class="track"><i style="width:{{ (100*n/total) if total else 0 }}%;background:{{ colores[k] }}"></i></div></div>{% endfor %}
+  </div>
+</div>
+{% endblock %}

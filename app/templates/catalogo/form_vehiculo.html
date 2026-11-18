@@ -1,4 +1,16 @@
-{% extends "catalogo/base.html" %}{% block c %}<h3>Vehículo</h3><form method="post" class="row g-2"><input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
-{% for n,l,t in [('marca','Marca','text'),('modelo','Modelo','text'),('anio','Año','number'),('precio','Precio','number'),('motor','Motor (electrico/hibrido/combustion)','text'),('categoria','Categoría','text'),('emisiones_co2','Emisiones CO2 g/km','number'),('imagen_url','URL imagen','text')] %}
-<div class="col-md-6"><label>{{ l }}</label><input class="form-control" type="{{ t }}" step="any" name="{{ n }}" value="{{ v[n] if v[n] is not none else '' }}"></div>{% endfor %}
-<div class="col-12"><button class="btn btn-success">Guardar</button></div></form>{% endblock %}
+{% extends "catalogo/base.html" %}
+{% block title %}{{ 'Editar vehículo' if v.id else 'Nuevo vehículo' }}{% endblock %}
+{% macro campo(n, l, t='text', hint='', req=True, cls='') %}<div class="{{ cls }}"><label for="{{ n }}">{{ l }}</label><input id="{{ n }}" name="{{ n }}" type="{{ t }}" step="any" {{ 'required' if req }} value="{{ v[n] if v[n] is not none else '' }}">{% if hint %}<p class="hint">{{ hint }}</p>{% endif %}</div>{% endmacro %}
+{% block c %}
+<div class="page-head"><div><span class="eyebrow">Inventario</span><h1>{{ 'Editar vehículo' if v.id else 'Nuevo vehículo' }}</h1></div></div>
+<form method="post" class="panel form-card"><input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+  <div class="form-grid">
+    {{ campo('marca', 'Marca') }}{{ campo('modelo', 'Modelo') }}{{ campo('anio', 'Año', 'number') }}{{ campo('categoria', 'Categoría', hint='Sedan, SUV, Hatchback…') }}
+    <div><label for="motor">Motor</label><select id="motor" name="motor" required>{% for m, l in [('electrico','Eléctrico'),('hibrido','Híbrido'),('combustion','Combustión')] %}<option value="{{ m }}" {{ 'selected' if v.motor==m }}>{{ l }}</option>{% endfor %}</select></div>
+    {{ campo('emisiones_co2', 'Emisiones CO₂ (g/km)', 'number', 'Obligatorio. Usa 0 para vehículos eléctricos.') }}
+    {{ campo('precio', 'Precio (COP)', 'number', 'En pesos colombianos.') }}
+    {{ campo('imagen_url', 'URL de la imagen', hint='Opcional. Sin imagen se muestra la inicial de la marca.', req=False, cls='span-2') }}
+  </div>
+  <div class="form-actions"><button class="btn">Guardar</button><a class="btn btn-ghost" href="{{ url_for('catalogo.admin_inventario') }}">Cancelar</a></div>
+</form>
+{% endblock %}

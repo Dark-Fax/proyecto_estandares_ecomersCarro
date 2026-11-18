@@ -1,173 +1,61 @@
-<!DOCTYPE html>
-<html lang="es">
+{% extends "catalogo/base.html" %}{% from "catalogo/_ui.html" import icon, leaf %}
+{% block title %}Noticias{% endblock %}
+{% block c %}
+<section class="hero" data-no-reveal>
+  <span class="eyebrow">Noticia destacada · Movilidad</span>
+  <h1>Carros eléctricos vs tradicionales: ¿cuál elegir?</h1>
+  <p class="lede">Explorando las ventajas y desventajas de cada tecnología</p>
+  <div class="hero-actions">
+    <a href="{{ url_for('noticias.listar') }}" class="btn btn-light">{{ icon('news', 16) }} Gestión de noticias</a>
+    <a href="{{ url_for('noticias.editar', id=1) }}" class="btn btn-outline-light">{{ icon('edit', 16) }} Crear/Editar noticia</a>
+  </div>
+</section>
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Kinetica - Inicio Noticias</title>
-    <link rel="icon" href="{{ url_for('static', filename='img/Logo.png.jpg') }}" type="image/x-icon">
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/Crear_Noticias.css') }}" />
-</head>
+<div class="vs">
+  <article class="vs-card">
+    <span class="vs-ico">{{ icon('bolt', 26) }}</span><span class="eyebrow">Tecnología limpia</span><h2>Vehículos eléctricos</h2>
+    <span class="label">Ventajas</span>
+    <ul class="ticks">
+      <li><b>Eco-amigable:</b> Cero emisiones directas de CO₂</li>
+      <li><b>Bajo costo de mantenimiento:</b> Sin cambios de aceite ni filtros</li>
+      <li><b>Ahorro energético:</b> Menos consumo vs combustibles fósiles</li>
+      <li><b>Silenciosos:</b> Conducción más tranquila</li>
+      <li><b>Eficiencia:</b> Mayor rendimiento energético</li>
+      <li><b>Incentivos fiscales:</b> Descuentos y beneficios gubernamentales</li>
+      <li><b>Tecnología avanzada:</b> Innovación constante</li>
+    </ul>
+  </article>
+  <article class="vs-card alt">
+    <span class="vs-ico">{{ icon('fuel', 26) }}</span><span class="eyebrow">Tecnología conocida</span><h2>Vehículos tradicionales</h2>
+    <span class="label">Ventajas</span>
+    <ul class="ticks">
+      <li><b>Alcance:</b> Mayor autonomía sin recarga</li>
+      <li><b>Infraestructura:</b> Estaciones de combustible en todas partes</li>
+      <li><b>Precio inicial:</b> Generalmente más económicos</li>
+      <li><b>Tiempo de recarga:</b> Repostar es rápido (2-5 minutos)</li>
+      <li><b>Resistencia al clima:</b> Sin afectación por temperatura</li>
+      <li><b>Experiencia familiar:</b> Conocimiento extendido</li>
+      <li><b>Reventa:</b> Mejor valor residual en algunos mercados</li>
+    </ul>
+  </article>
+</div>
 
-<body>
+<div class="section-head"><h2>Comparación detallada</h2></div>
+<div class="stats">
+  {% for t, e, d, n in [
+    ('Costo anual', '~$800.000', '~$4.500.000', 'Los eléctricos ahorran hasta 5 veces más al año'),
+    ('Emisiones de CO₂', '0 toneladas', '2.4 toneladas/año', 'Los eléctricos son 100% amigables con el ambiente'),
+    ('Autonomía', '300-600 km', '500-1000 km', 'Los tradicionales aún dominan en largas distancias'),
+    ('Mantenimiento', 'Mínimo', 'Regular', 'Los eléctricos requieren menos visitas al taller')] %}
+  <article class="stat"><h3>{{ t }}</h3>
+    <div class="duel"><div><small>Eléctrico</small><b>{{ e }}</b></div><div><small>Tradicional</small><b>{{ d }}</b></div></div>
+    <p>{{ n }}</p></article>
+  {% endfor %}
+</div>
 
-    <!-- Barra lateral -->
-    {% include 'partials/sidebar.html' %}
-
-    <!-- Contenedor principal -->
-    <main class="content">
-        <header class="header">
-            <h2>Inicio - Noticias ✏</h2>
-            <div class="header-right">
-                <div class="user-greeting">
-                    <div class="avatar-circle">👋</div>
-                    <div class="user-text">
-                        <p class="welcome">Hola,</p>
-                        <p class="username" id="nombreUsuario">{{ usuario_nombre }}</p>
-                    </div>
-                </div>
-                <a href="{{ url_for('usuarios.logout') }}" class="logout-btn">Cerrar sesión</a>
-            </div>
-        </header>
-
-        <!-- Botones principales justo después del header -->
-        <div class="btn-group" style="margin: 15px 0;">
-            <a href="{{ url_for('noticias.listar') }}" class="btn-gestion-noticias">📰 Gestión de Noticias</a>
-            <a href="{{ url_for('noticias.editar', id=1) }}" class="btn-crear-editar">✏ Crear/Editar Noticia</a>
-        </div>
-
-        <!-- Sección principal de la noticia -->
-        <section class="main-section">
-
-            <!-- Título de la noticia -->
-            <div class="form-card fade-in">
-                <h1>🚗 Carros Eléctricos vs Tradicionales: ¿Cuál elegir?</h1>
-                <p class="subtitle">Explorando las ventajas y desventajas de cada tecnología</p>
-            </div>
-
-            <!-- Comparación principal -->
-            <div class="comparison-grid fade-in">
-
-                <!-- Vehículos eléctricos -->
-                <div class="comparison-card electric">
-                    <div class="card-header">
-                        <span class="icon-large">⚡</span>
-                        <h2>Vehículos Eléctricos</h2>
-                    </div>
-                    <div class="advantages">
-                        <h3>✅ Ventajas</h3>
-                        <ul>
-                            <li><strong>Eco-amigable:</strong> Cero emisiones directas de CO₂</li>
-                            <li><strong>Bajo costo de mantenimiento:</strong> Sin cambios de aceite ni filtros</li>
-                            <li><strong>Ahorro energético:</strong> Menos consumo vs combustibles fósiles</li>
-                            <li><strong>Silenciosos:</strong> Conducción más tranquila</li>
-                            <li><strong>Eficiencia:</strong> Mayor rendimiento energético</li>
-                            <li><strong>Incentivos fiscales:</strong> Descuentos y beneficios gubernamentales</li>
-                            <li><strong>Tecnología avanzada:</strong> Innovación constante</li>
-                        </ul>
-                    </div>
-                </div>
-
-                <!-- Vehículos tradicionales -->
-                <div class="comparison-card traditional">
-                    <div class="card-header">
-                        <span class="icon-large">⛽</span>
-                        <h2>Vehículos Tradicionales</h2>
-                    </div>
-                    <div class="advantages">
-                        <h3>✅ Ventajas</h3>
-                        <ul>
-                            <li><strong>Alcance:</strong> Mayor autonomía sin recarga</li>
-                            <li><strong>Infraestructura:</strong> Estaciones de combustible en todas partes</li>
-                            <li><strong>Precio inicial:</strong> Generalmente más económicos</li>
-                            <li><strong>Tiempo de recarga:</strong> Repostar es rápido (2-5 minutos)</li>
-                            <li><strong>Resistencia al clima:</strong> Sin afectación por temperatura</li>
-                            <li><strong>Experiencia familiar:</strong> Conocimiento extendido</li>
-                            <li><strong>Reventa:</strong> Mejor valor residual en algunos mercados</li>
-                        </ul>
-                    </div>
-                </div>
-
-            </div>
-
-            <!-- Comparación detallada -->
-            <div class="detailed-comparison fade-in">
-                <h2 class="section-title">📊 Comparación Detallada</h2>
-
-                <div class="comparison-row">
-                    <div class="comparison-item">
-                        <h4>Costo Anual</h4>
-                        <div class="values">
-                            <span class="value electric-value">~$800.000</span>
-                            <span class="value traditional-value">~$4.500.000</span>
-                        </div>
-                        <p>Los eléctricos ahorran hasta 5 veces más al año</p>
-                    </div>
-
-                    <div class="comparison-item">
-                        <h4>Emisiones de CO₂</h4>
-                        <div class="values">
-                            <span class="value electric-value">0 toneladas</span>
-                            <span class="value traditional-value">2.4 toneladas/año</span>
-                        </div>
-                        <p>Los eléctricos son 100% amigables con el ambiente</p>
-                    </div>
-
-                    <div class="comparison-item">
-                        <h4>Autonomía</h4>
-                        <div class="values">
-                            <span class="value electric-value">300-600 km</span>
-                            <span class="value traditional-value">500-1000 km</span>
-                        </div>
-                        <p>Los tradicionales aún dominan en largas distancias</p>
-                    </div>
-
-                    <div class="comparison-item">
-                        <h4>Mantenimiento</h4>
-                        <div class="values">
-                            <span class="value electric-value">Mínimo</span>
-                            <span class="value traditional-value">Regular</span>
-                        </div>
-                        <p>Los eléctricos requieren menos visitas al taller</p>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Conclusión -->
-            <div class="conclusion-card fade-in">
-                <h2>💡 Conclusión</h2>
-                <p>
-                    Los vehículos eléctricos representan el futuro de la movilidad sostenible, ofreciendo
-                    beneficios ambientales significativos y costos operativos más bajos a largo plazo.
-                    Sin embargo, los vehículos tradicionales siguen siendo una opción viable gracias a su
-                    infraestructura establecida y autonomía extendida.
-                </p>
-                <p class="highlight">
-                    <strong>La elección final depende de tus necesidades:</strong> Si buscas ahorrar a largo plazo
-                    y cuidar el planeta, ve eléctrico. Si necesitas mayor autonomía y viajes largos frecuentes,
-                    un vehículo tradicional sigue siendo una excelente opción.
-                </p>
-            </div>
-
-        </section>
-    </main>
-
-    <script>
-        // Animación de entrada
-        window.addEventListener('DOMContentLoaded', () => {
-            const cards = document.querySelectorAll('.comparison-card, .comparison-item, .conclusion-card, .form-card');
-            cards.forEach((card, index) => {
-                card.style.opacity = '0';
-                card.style.transform = 'translateY(20px)';
-                setTimeout(() => {
-                    card.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
-                    card.style.opacity = '1';
-                    card.style.transform = 'translateY(0)';
-                }, index * 100);
-            });
-        });
-    </script>
-
-</body>
-
-</html>
+<section class="conclusion">
+  <span class="eyebrow" style="color:#d3b673">Conclusión</span><h2 style="margin-top:10px">Lo que debes considerar</h2>
+  <p>Los vehículos eléctricos representan el futuro de la movilidad sostenible, ofreciendo beneficios ambientales significativos y costos operativos más bajos a largo plazo. Sin embargo, los vehículos tradicionales siguen siendo una opción viable gracias a su infraestructura establecida y autonomía extendida.</p>
+  <p class="highlight"><strong>La elección final depende de tus necesidades:</strong> Si buscas ahorrar a largo plazo y cuidar el planeta, ve eléctrico. Si necesitas mayor autonomía y viajes largos frecuentes, un vehículo tradicional sigue siendo una excelente opción.</p>
+</section>
+{% endblock %}

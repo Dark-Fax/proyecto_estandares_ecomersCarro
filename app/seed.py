@@ -3,6 +3,7 @@ import os
 from app import db
 from app.models.usuario import Usuario
 from app.models.vehiculo import Vehiculo
+from app.imagenes import FOTOS
 
 VEHICULOS = [
  ("Tesla","Model 3 Long Range",2024,320000000,"electrico","Sedan",0),
@@ -23,5 +24,8 @@ def seed():
         a.set_password(os.getenv("ADMIN_PASSWORD", "Admin1234")); db.session.add(a)
     if Vehiculo.query.count() == 0:
         for m,mo,an,pr,mt,ca,co in VEHICULOS:
-            db.session.add(Vehiculo(marca=m,modelo=mo,anio=an,precio=pr,motor=mt,categoria=ca,emisiones_co2=co))
+            db.session.add(Vehiculo(marca=m,modelo=mo,anio=an,precio=pr,motor=mt,categoria=ca,emisiones_co2=co,imagen_url=FOTOS.get((m,mo))))
+    else:  # bases ya creadas: completa las fotos vacías sin tocar las que el admin subió
+        for v in Vehiculo.query.filter((Vehiculo.imagen_url.is_(None)) | (Vehiculo.imagen_url == "")):
+            v.imagen_url = FOTOS.get((v.marca, v.modelo)) or v.imagen_url
     db.session.commit()

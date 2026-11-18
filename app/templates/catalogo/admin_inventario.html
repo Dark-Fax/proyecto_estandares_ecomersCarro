@@ -1,6 +1,13 @@
-{% extends "catalogo/base.html" %}{% block c %}<h3>Inventario</h3><a class="btn btn-success mb-2" href="{{ url_for('catalogo.admin_vehiculo') }}">Añadir vehículo</a>
-<table class="table"><tr><th>#</th><th>Vehículo</th><th>Motor</th><th>CO₂</th><th>Estado</th><th></th></tr>
-{% for v in vs %}<tr><td>{{ v.id }}</td><td>{{ v.marca }} {{ v.modelo }}</td><td>{{ v.motor }}</td><td>{{ v.emisiones_co2 }}</td><td>{{ v.estado }}</td><td class="d-flex gap-1">
-<a class="btn btn-sm btn-outline-primary" href="{{ url_for('catalogo.admin_vehiculo', vid=v.id) }}">Editar</a>
-{% if v.estado=='pendiente' %}<form method="post" action="{{ url_for('catalogo.registrar_venta', vid=v.id) }}"><input type="hidden" name="csrf_token" value="{{ csrf_token() }}"><button class="btn btn-sm btn-success">Registrar venta</button></form>{% endif %}
-<form method="post" action="{{ url_for('catalogo.eliminar_vehiculo', vid=v.id) }}"><input type="hidden" name="csrf_token" value="{{ csrf_token() }}"><button class="btn btn-sm btn-outline-danger">Eliminar</button></form></td></tr>{% endfor %}</table>{% endblock %}
+{% extends "catalogo/base.html" %}{% from "catalogo/_ui.html" import chip, motor %}
+{% block title %}Inventario{% endblock %}
+{% block c %}
+<div class="page-head"><div><span class="eyebrow">Administración</span><h1>Inventario</h1><p class="lede">{{ vs|length }} vehículo{{ '' if vs|length == 1 else 's' }} registrado{{ '' if vs|length == 1 else 's' }}.</p></div>
+<a class="btn" href="{{ url_for('catalogo.admin_vehiculo') }}">Añadir vehículo</a></div>
+<div class="table-wrap"><table>
+<thead><tr><th>#</th><th>Vehículo</th><th>Motor</th><th class="num">CO₂ g/km</th><th>Estado</th><th></th></tr></thead><tbody>
+{% for v in vs %}<tr><td class="id">{{ v.id }}</td><td class="strong">{{ v.marca }} {{ v.modelo }} <span class="muted">· {{ v.anio }}</span></td><td>{{ motor(v.motor) }}</td><td class="num">{{ '%g'|format(v.emisiones_co2|float) }}</td><td>{{ chip(v.estado) }}</td>
+<td class="actions"><a class="btn btn-ghost btn-sm" href="{{ url_for('catalogo.admin_vehiculo', vid=v.id) }}">Editar</a>
+{% if v.estado=='pendiente' %}<form method="post" action="{{ url_for('catalogo.registrar_venta', vid=v.id) }}"><input type="hidden" name="csrf_token" value="{{ csrf_token() }}"><button class="btn btn-sm">Registrar venta</button></form>{% endif %}
+<form method="post" action="{{ url_for('catalogo.eliminar_vehiculo', vid=v.id) }}" onsubmit="return confirm('¿Eliminar este vehículo?')"><input type="hidden" name="csrf_token" value="{{ csrf_token() }}"><button class="btn btn-danger btn-sm">Eliminar</button></form></td></tr>{% endfor %}
+</tbody></table></div>
+{% endblock %}

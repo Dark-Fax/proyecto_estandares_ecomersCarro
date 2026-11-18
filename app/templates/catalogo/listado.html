@@ -1,18 +1,47 @@
-{% extends "catalogo/base.html" %}{% block c %}
-<form class="row g-2 mb-3">
-<div class="col-6 col-md-2"><select name="marca" class="form-select"><option value="">Marca</option>{% for m in marcas %}<option {{ 'selected' if f.get('marca')==m }}>{{ m }}</option>{% endfor %}</select></div>
-<div class="col-6 col-md-2"><input name="modelo" class="form-control" placeholder="Modelo" value="{{ f.get('modelo','') }}"></div>
-<div class="col-6 col-md-2"><input name="precio_max" type="number" class="form-control" placeholder="Precio máx." value="{{ f.get('precio_max','') }}"></div>
-<div class="col-6 col-md-1"><input name="anio" type="number" class="form-control" placeholder="Año" value="{{ f.get('anio','') }}"></div>
-<div class="col-6 col-md-2"><input name="categoria" class="form-control" placeholder="Categoría" value="{{ f.get('categoria','') }}"></div>
-<div class="col-6 col-md-2"><select name="motor" class="form-select"><option value="">Motor</option>{% for m in ['electrico','hibrido','combustion'] %}<option {{ 'selected' if f.get('motor')==m }}>{{ m }}</option>{% endfor %}</select></div>
-<div class="col-12 col-md-1"><button class="btn btn-success w-100">Filtrar</button></div></form>
-{% if not p.items %}<div class="alert alert-warning">No hay vehículos disponibles con estas características</div>{% endif %}
-<div class="row">{% for v in p.items %}<div class="col-12 col-md-4 mb-3"><div class="card h-100">
-{% if v.imagen_url %}<img src="{{ v.imagen_url }}" class="card-img-top" alt="{{ v.modelo }}">{% endif %}
-<div class="card-body"><h5>{{ v.marca }} {{ v.modelo }} {% if v.es_ecologico() %}<span class="badge bg-success">Planeta Verde</span>{% endif %}</h5>
-<p class="mb-1">{{ v.motor|capitalize }} · {{ v.anio }} · ${{ '{:,.0f}'.format(v.precio) }} COP</p><span class="badge bg-secondary">{{ v.estado }}</span>
-<a class="stretched-link" href="{{ url_for('catalogo.detalle', vid=v.id) }}"></a></div></div></div>{% endfor %}</div>
-{% if p.has_prev %}<a href="{{ url_for('catalogo.listado', pagina=p.prev_num, **qs) }}">&laquo; Anterior</a>{% endif %}
-{% if p.has_next %}<a class="ms-3" href="{{ url_for('catalogo.listado', pagina=p.next_num, **qs) }}">Siguiente &raquo;</a>{% endif %}
+{% extends "catalogo/base.html" %}{% from "catalogo/_ui.html" import chip, motor, media, scene, leaf %}
+{% block title %}Catálogo{% endblock %}
+{% block c %}
+<section class="cat-hero" data-no-reveal>
+  <div class="cat-copy">
+    <h1>Eléctricos e híbridos, con sus emisiones a la vista</h1>
+    <p class="lede">Compara precio, tipo de motor y gramos de CO₂ por kilómetro antes de decidir. Cada vehículo con distintivo Planeta Verde cuida el aire que respiramos.</p>
+    <nav class="pills" aria-label="Filtrar por motor">
+      <a href="{{ url_for('catalogo.listado') }}" {% if not f.get('motor') %}aria-current="true"{% endif %}>Todos</a>
+      <a href="{{ url_for('catalogo.listado', motor='electrico') }}" {% if f.get('motor') == 'electrico' %}aria-current="true"{% endif %}>Eléctricos</a>
+      <a href="{{ url_for('catalogo.listado', motor='hibrido') }}" {% if f.get('motor') == 'hibrido' %}aria-current="true"{% endif %}>Híbridos</a>
+      <a href="{{ url_for('catalogo.listado', motor='combustion') }}" {% if f.get('motor') == 'combustion' %}aria-current="true"{% endif %}>Combustión</a>
+    </nav>
+  </div>
+  <div class="scene" aria-hidden="true">{{ scene() }}<span class="drift d1">{{ leaf(20) }}</span><span class="drift d2">{{ leaf(14) }}</span><span class="drift d3">{{ leaf(24) }}</span></div>
+</section>
+
+<form class="filters" method="get" aria-label="Filtros del catálogo">
+  <div><label for="marca">Marca</label><select id="marca" name="marca"><option value="">Todas</option>{% for m in marcas %}<option {{ 'selected' if f.get('marca')==m }}>{{ m }}</option>{% endfor %}</select></div>
+  <div><label for="modelo">Modelo</label><input id="modelo" name="modelo" placeholder="Ej. EV6" value="{{ f.get('modelo','') }}"></div>
+  <div><label for="categoria">Categoría</label><input id="categoria" name="categoria" placeholder="Ej. SUV" value="{{ f.get('categoria','') }}"></div>
+  <div><label for="motor">Motor</label><select id="motor" name="motor"><option value="">Todos</option>{% for m in ['electrico','hibrido','combustion'] %}<option value="{{ m }}" {{ 'selected' if f.get('motor')==m }}>{{ motor(m) }}</option>{% endfor %}</select></div>
+  <div><label for="anio">Año</label><input id="anio" name="anio" type="number" placeholder="2024" value="{{ f.get('anio','') }}"></div>
+  <div><label for="precio_max">Precio máximo (COP)</label><input id="precio_max" name="precio_max" type="number" placeholder="300000000" value="{{ f.get('precio_max','') }}"></div>
+  <div class="actions"><button class="btn">Filtrar</button>{% if qs %}<a class="btn btn-ghost" href="{{ url_for('catalogo.listado') }}">Limpiar</a>{% endif %}</div>
+</form>
+
+{% if not p.items %}<div class="empty"><h3>No hay vehículos disponibles con estas características</h3><p>Prueba ajustando los filtros o consulta el catálogo completo.</p><a class="btn btn-ghost" href="{{ url_for('catalogo.listado') }}">Ver todo el catálogo</a></div>
+{% else %}
+<div class="results"><span>{{ p.total }} vehículo{{ '' if p.total == 1 else 's' }}</span></div>
+<div class="grid">{% for v in p.items %}
+  <article class="vehicle" data-motor="{{ v.motor }}">{{ media(v) }}
+    {% set co2 = v.emisiones_co2|float %}
+    <div class="v-body"><span class="eyebrow">{{ v.categoria }} · {{ v.anio }}</span>
+      <h3><a class="stretched-link" href="{{ url_for('catalogo.detalle', vid=v.id) }}">{{ v.marca }} {{ v.modelo }}</a></h3>
+      <div class="co2" role="img" aria-label="{{ motor(v.motor) }}, {{ '%g'|format(co2) }} gramos de CO₂ por kilómetro">
+        <span class="co2-top"><b>{{ motor(v.motor) }}</b><span>{{ 'Cero emisiones' if co2 == 0 else ('%g'|format(co2)) ~ ' g/km CO₂' }}</span></span>
+        <span class="co2-track"><i style="width:{{ [co2 / 1.8, 100]|min|round|int }}%"></i></span>
+      </div>
+      <div class="v-foot"><span class="price">${{ '{:,.0f}'.format(v.precio) }}<small>COP</small></span>{{ chip(v.estado) }}</div>
+    </div><span class="go" aria-hidden="true">&rarr;</span></article>{% endfor %}</div>
+{% if p.pages > 1 %}<nav class="pager" aria-label="Paginación">
+  {% if p.has_prev %}<a class="btn btn-ghost btn-sm" href="{{ url_for('catalogo.listado', pagina=p.prev_num, **qs) }}">&laquo; Anterior</a>{% endif %}
+  <span>Página {{ p.page }} de {{ p.pages }}</span>
+  {% if p.has_next %}<a class="btn btn-ghost btn-sm" href="{{ url_for('catalogo.listado', pagina=p.next_num, **qs) }}">Siguiente &raquo;</a>{% endif %}</nav>{% endif %}
+{% endif %}
 {% endblock %}

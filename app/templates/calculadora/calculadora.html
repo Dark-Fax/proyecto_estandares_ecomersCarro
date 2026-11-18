@@ -1,90 +1,48 @@
-<!DOCTYPE html>
-<html lang="es">
+{% extends "catalogo/base.html" %}{% from "catalogo/_ui.html" import icon %}
+{% block title %}Calculadora de recarga{% endblock %}
+{% macro num(n, label, unit, ph='', req=False, val='') %}<div class="inputx"><label for="{{ n }}">{{ label }}</label><input id="{{ n }}" type="number" name="{{ n }}" step="any" min="0" inputmode="decimal" placeholder="{{ ph }}" value="{{ val }}" {{ 'required' if req }}><em>{{ unit }}</em></div>{% endmacro %}
+{% block c %}
+{% set r = resultados if resultados is defined else none %}
+<div class="page-head"><div><span class="eyebrow">Planifica tu viaje</span><h1>Calculadora de recarga y costos</h1><p class="lede">Estima cuántas recargas necesitas, cuánta energía consumes y cuánto te costará recorrer una distancia.</p></div></div>
+<div class="calc">
+  <form action="{{ url_for('calculadora.calcular') }}" method="POST" class="panel"><input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+    <div class="form-grid">
+      {{ num('autonomia', 'Autonomía', 'km', '400', True, '%g'|format(r.autonomia) if r else '') }}
+      {{ num('bateria_kwh', 'Capacidad de la batería', 'kWh', '65', False, '%g'|format(r.bateria_kwh) if r else '') }}
+      {{ num('distancia', 'Distancia a recorrer', 'km', '900', False, '%g'|format(r.distancia) if r else '') }}
+      {{ num('precio_kwh', 'Precio por kWh', 'COP', '15', False, '%g'|format(r.precio_kwh) if r else '') }}
+      <h3 class="fieldset-title">Tasa de carga <span class="muted" style="font:500 .8rem var(--sans)">opcional</span></h3>
+      <p class="note">Si no ingresas estos campos, la calculadora usará una tasa estándar de <b>160 km / 30 min</b>.</p>
+      {{ num('km_carga', '¿Cuántos km carga tu vehículo por sesión?', 'km', 'Ej: 160') }}
+      {{ num('min_carga', '¿Cuántos minutos tarda en esa carga?', 'min', 'Ej: 30') }}
+    </div>
+    <div class="form-actions"><button type="submit" class="btn btn-block">{{ icon('calc', 16) }} Calcular</button></div>
+  </form>
 
-<head>
-    <meta charset="UTF-8">
-    <title>Kinetica — Calculadora</title>
-
-    <link rel="icon" href="{{ url_for('static', filename='img/Logo.png.jpg') }}" type="image/x-icon">
-
-    <!-- CSS GLOBAL -->
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/Dashboard.css') }}">
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/calculadora.css') }}">
-</head>
-
-<body>
-
-    {% include 'partials/sidebar.html' %}
-
-
-    <!-- === CONTENIDO PRINCIPAL === -->
-    <main class="content">
-
-        {% include 'partials/header_usuario.html' %}
-
-        <div class="calc-container">
-
-            <h2 class="calc-title">🧮 Calculadora de Recarga y Costos</h2>
-
-            <form action="{{ url_for('calculadora.calcular') }}" method="POST" class="calc-box"><input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
-
-                <!-- INPUTS PRINCIPALES -->
-                <label>Autonomía (km):</label>
-                <input type="number" name="autonomia" step="any">
-
-                <label>Capacidad de la batería (kWh):</label>
-                <input type="number" name="bateria_kwh" step="any">
-
-                <label>Distancia a recorrer (km):</label>
-                <input type="number" name="distancia" step="any">
-
-                <label>Precio por kWh (COP):</label>
-                <input type="number" name="precio_kwh" step="any">
-
-
-                <!-- OPCIONALES: TASA DE CARGA -->
-                <h3 class="calc-subtitle">Opcional — Datos de tasa de carga</h3>
-                <p class="calc-note">
-                    Si no ingresas estos campos, la calculadora usará una tasa estándar de <b>160 km / 30 min</b>.
-                </p>
-
-                <label>¿Cuántos km carga tu vehículo por sesión?</label>
-                <input type="number" name="km_carga" step="any" placeholder="Ej: 160">
-
-                <label>¿Cuántos minutos tarda en esa carga?</label>
-                <input type="number" name="min_carga" step="any" placeholder="Ej: 30">
-
-                <button type="submit" class="calc-btn">Calcular</button>
-
-            </form>
-
-
-            <!-- === RESULTADOS === -->
-            {% if resultados is defined %}
-            <div class="calc-results">
-
-                <h3>📊 Resultados del cálculo</h3>
-
-                <div class="result-item"><strong>Cargas equivalentes necesarias:</strong> {{ resultados.cargas_totales }}</div>
-
-                <div class="result-item"><strong>Recargas en ruta:</strong> {{ resultados.recargas_necesarias }}</div>
-
-                <div class="result-item"><strong>Energía total requerida:</strong> {{ resultados.energia_total }} kWh</div>
-
-                <div class="result-item"><strong>Tiempo estimado de recarga:</strong>
-                    {{ resultados.tiempo_minutos }} min (≈ {{ resultados.tiempo_horas }} h)
-                </div>
-
-                <div class="result-item"><strong>Costo total estimado:</strong>
-                    ${{ "{:,.0f}".format(resultados.costo_total) }} COP
-                </div>
-
-            </div>
-            {% endif %}
-
-        </div>
-
-    </main>
-    <script src="{{ url_for('static', filename='js/Global.js') }}"></script>
-</body>
-</html>
+  <div class="calc-side">
+  {% if r %}
+    <div class="results-grid">
+      <div class="res big"><div class="label">Costo total estimado</div><b data-count="{{ r.costo_total }}" data-pre="$">${{ "{:,.0f}".format(r.costo_total) }}</b><small>COP · {{ r.energia_total }} kWh a ${{ '%g'|format(r.precio_kwh) }} por kWh</small></div>
+      <div class="res"><div class="label">Cargas equivalentes necesarias</div><b>{{ r.cargas_totales }}</b><small>Baterías completas para el trayecto</small></div>
+      <div class="res"><div class="label">Recargas en ruta</div><b>{{ r.recargas_necesarias }}</b><small>Parando a recargar en el camino</small></div>
+      <div class="res"><div class="label">Energía total requerida</div><b>{{ r.energia_total }} <span style="font-size:1rem">kWh</span></b><small>Consumo estimado del viaje</small></div>
+      <div class="res"><div class="label">Tiempo estimado de recarga</div><b>{{ r.tiempo_minutos }} <span style="font-size:1rem">min</span></b><small>≈ {{ r.tiempo_horas }} h en total</small></div>
+    </div>
+    {% set n = [r.recargas_necesarias, 40]|min %}
+    <div class="panel route"><div class="label">Ruta de {{ '%g'|format(r.distancia) }} km</div>
+      <div class="route-line" role="img" aria-label="Ruta con {{ r.recargas_necesarias }} recargas">
+        <span class="stop start" style="left:0;--i:0"><span>0 km</span></span>
+        {% for k in range(1, n + 1) %}<span class="stop" style="left:{{ (k * r.autonomia / r.distancia * 100)|round(2) }}%;--i:{{ k }}" title="Recarga {{ k }}: {{ '%g'|format(k * r.autonomia) }} km">{% if n <= 6 %}<span>{{ '%g'|format(k * r.autonomia) }}</span>{% endif %}</span>{% endfor %}
+        <span class="stop end" style="left:100%;--i:{{ n + 1 }}"><span>{{ '%g'|format(r.distancia) }} km</span></span>
+      </div>
+      <p class="route-legend">{% if r.recargas_necesarias == 0 %}<b>Sin recargas:</b> la autonomía alcanza para todo el trayecto.{% else %}Recargas a los <b>{% for k in range(1, ([n, 8]|min) + 1) %}{{ '%g'|format(k * r.autonomia) }}{{ ' · ' if not loop.last }}{% endfor %}{{ ' …' if n > 8 }} km</b>.{% endif %}</p>
+    </div>
+  {% else %}
+    <div class="panel tips"><h3>Cómo funciona</h3>
+      <ol><li><span><b>Ingresa la autonomía</b> real de tu vehículo; es el único dato obligatorio.</span></li>
+      <li><span><b>Completa batería, distancia y precio</b> o deja los valores por defecto (65 kWh, 100 km, $15 por kWh).</span></li>
+      <li><span><b>Calcula</b> y verás el costo, la energía y las paradas de recarga sobre tu ruta.</span></li></ol></div>
+  {% endif %}
+  </div>
+</div>
+{% endblock %}
